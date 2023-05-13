@@ -27,7 +27,7 @@ app.post('/register', async (req, res) => {
     } catch (error) {
         error.constraint != undefined && res.json("User with that name already exists!");
     }
-})
+});
 //validate user login
 app.post('/login', async(req, res) => {
     try {
@@ -46,7 +46,7 @@ app.post('/login', async(req, res) => {
     } catch (error) {
         res.json(error.message);    
     }
-})
+});
 
 //ACCOUNT POST ROUTES//
 
@@ -76,6 +76,18 @@ app.get('/posts/:userId', async (req, res) => {
         res.json(error.message);
     }
 });
+
+//get all liked posts by user
+app.get('/liked-post/:userId', async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const likedPosts = await pool.query('SELECT * FROM post WHERE $1=ANY(liked_users)', [userId]);
+        res.json(likedPosts.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+})
+
 //get a post
 app.get('/post/:postId', async (req, res) => {
     try {
@@ -86,6 +98,7 @@ app.get('/post/:postId', async (req, res) => {
         req.json(error.message)
     }
 });
+
 //update a post
 app.patch('/post/:postId', async (req, res) => {
     try {
@@ -97,6 +110,7 @@ app.patch('/post/:postId', async (req, res) => {
         res.json(error.message);
     }
 });
+
 //delete a post
 app.delete('/post/:postId', async(req, res) => {
     try {
@@ -107,6 +121,31 @@ app.delete('/post/:postId', async(req, res) => {
         res.json(error.message);
     }
 });
+
+// POST FEATURES
+
+//like post
+app.patch('/like-post/:userId/:postId', async (req, res) => {
+    try {
+        const { userId, postId } = req.params;
+        const updatedPost = await pool.query('UPDATE post SET liked_users= array_append(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
+        res.json(updatedPost.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
+
+//unlike post
+app.patch('/unlike-post/:userId/:postId', async (req, res) => {
+    try {
+        const { userId, postId } = req.params;
+        const updatedPost = await pool.query('UPDATE post SET liked_users = array_remove(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
+        res.json(updatedPost.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
+
 app.listen(3001, () => {
     console.log("Server has started on port 3001");
 });

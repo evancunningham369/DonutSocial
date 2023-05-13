@@ -11,7 +11,8 @@ CREATE TABLE post(
     post_id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content VARCHAR(255) NOT NULL,
     post_datetime TIMESTAMP,
-    user_id int REFERENCES account
+    user_id int REFERENCES account,
+    liked_users integer[];
 );
 /*
 CHANGE COLUMN NAME
