@@ -54,23 +54,59 @@ app.post('/login', async(req, res) => {
 
 app.post('/post', async (req, res) => {
     try {
+        const dateTime = new Date(Date.now()).toISOString();
         const {content, userId} = req.body;
-        
-        console.log(req.body);
-
+        const post = await pool.query(
+            'INSERT INTO post(content, post_datetime, user_id) VALUES($1, $2, (SELECT user_id FROM account WHERE user_id=$3)) RETURNING *',
+            [content, dateTime, userId]
+            );
+        res.json(post.rows);
     } catch (error) {
         console.log(error.message);
     }
-})
+});
 
-//get all posts
-
+//get all user posts
+app.get('/posts/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const allPosts = await pool.query('SELECT * FROM post WHERE user_id=$1', [userId]);
+        res.json(allPosts.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
 //get a post
-
+app.get('/post/:postId', async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const post = await pool.query('SELECT * FROM post WHERE post_id=$1', [postId]);
+        res.json(post.rows);
+    } catch (error) {
+        req.json(error.message)
+    }
+});
 //update a post
-
+app.patch('/post/:postId', async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { content } = req.body;
+        const updatedPost = await pool.query('UPDATE post SET content=$1 WHERE post_id=$2 RETURNING *', [content, postId]);
+        res.json(updatedPost.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
 //delete a post
-
+app.delete('/post/:postId', async(req, res) => {
+    try {
+        const { postId } = req.params;
+        const deletedPost = await pool.query('DELETE FROM post WHERE post_id=$1', [postId]);
+        res.json(deletedPost.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
 app.listen(3001, () => {
     console.log("Server has started on port 3001");
 });

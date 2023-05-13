@@ -9,7 +9,7 @@ CREATE TABLE account(
 
 CREATE TABLE post(
     post_id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    content VARCHAR(255),
+    content VARCHAR(255) NOT NULL,
     post_datetime TIMESTAMP,
     user_id int REFERENCES account
 );
