@@ -1,8 +1,9 @@
 import express from 'express';
 const app = express();
-import bcrypt from 'bcrypt';
 import cors from 'cors';
-import { pool } from './db.js';
+import * as account_controller from './controllers/account-controller.js';
+import * as user_controller from './controllers/user-controller.js';
+import * as post_controller from './controllers/post-controller.js';
 
 //middleware
 app.use(cors());
@@ -10,187 +11,53 @@ app.use(express.json());
 
 //ROUTES//
 
-//ACCOUNT USER ROUTES//
+//ACCOUNT ACTION ROUTES//
 
-//create a user
-app.post('/register', async(req, res) => {
-    try {
-        const { username, password } = req.body;
-        const saltRounds = 5;
-        var hashPass = await bcrypt.hash(password, saltRounds);
-        const newAccount = await pool.query(
-            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING username',
-             [username, hashPass]
-             );
+//create an account
+app.post('/register', account_controller.register_account);
 
-        res.json(newAccount);
-    } catch (error) {
-        error.constraint != undefined && res.json("User with that name already exists!");
-    }
-});
-//validate user login
-app.post('/login', async(req, res) => {
-    try {
-        const { username, password } = req.body;
-        const result = await pool.query('SELECT * FROM account WHERE username= $1', [username]);
-        if(result.rowCount == 0){
-            throw new Error("Incorrect username!")
-        }
-        const user = result.rows[0];
+//login an account
+app.post('/login', account_controller.login_account);
 
-        const match = await bcrypt.compare(password, user.hashpass);
-        if(!match){
-            throw new Error("Incorrect password!");
-        }
-        res.json(user);
-    } catch (error) {
-        res.json(error.message);    
-    }
-});
-//ACCOUNT ACTION ROUTES
+//get an account
+app.get('/:userId', account_controller.get_account);
 
-//get a user
-app.get('/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const user = await pool.query('SELECT * FROM account WHERE user_id=$1', [userId]);
-        res.json(user.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+//ACCOUNT USER ACTION ROUTES
 
 //follow user
-app.patch('/follow-user/', async (req, res) => {
-    try {
-        const { userId, userToFollow } = req.query;
-        const user = await pool.query('UPDATE account SET followed_users = array_append(followed_users, $2) WHERE user_id=$1 RETURNING *', [userId, userToFollow])
-        res.json(user.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+app.patch('/follow-user/', user_controller.follow_user);
 
 //unfollow user
-app.patch('/unfollow-user/', async(req, res) => {
-    try {
-        const { userId, userToUnfollow } = req.query;
-        const user = await pool.query('UPDATE account SET followed_users = array_remove(followed_users, $2) WHERE user_id=$1', [userId, userToUnfollow]);
-        res.json(user.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-})
+app.patch('/unfollow-user/', user_controller.unfollow_user)
+
+//like post
+app.patch('/like-post/', user_controller.like_post);
+
+//unlike post
+app.patch('/unlike-post/', user_controller.unlike_post);
 
 //ACCOUNT POST ROUTES//
 
 //create a post
-
-app.post('/post', async(req, res) => {
-    try {
-        const dateTime = new Date(Date.now()).toISOString();
-        const {content, userId} = req.body;
-        const post = await pool.query(
-            'INSERT INTO post(content, post_datetime, user_id) VALUES($1, $2, (SELECT user_id FROM account WHERE user_id=$3)) RETURNING *',
-            [content, dateTime, userId]
-            );
-        res.json(post.rows);
-    } catch (error) {
-        console.log(error.message);
-    }
-});
+app.post('/post', post_controller.create_post);
 
 //get all user posts
-app.get('/posts/:userId', async(req, res) => {
-    try {
-        const { userId } = req.params;
-        const allPosts = await pool.query('SELECT * FROM post WHERE user_id=$1', [userId]);
-        res.json(allPosts.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+app.get('/posts/:userId', post_controller.get_user_posts);
 
-//get all posts by followed users
-app.get('/followed-user-posts/:userId', async(req, res) => {
-    try {
-        const { userId } = req.params;
-        const users_followed = await pool.query('SELECT followed_users FROM account WHERE user_id=$1', [userId]);
-        const followingPosts = await pool.query('SELECT * FROM post WHERE user_id=ANY($1)', [users_followed.rows[0].followed_users]);
-        res.json(followingPosts.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-})
+//get all posts from users that the current account is following
+app.get('/followed-user-posts/:userId', post_controller.get_user_following_posts);
 
-//get all liked posts by user
-app.get('/liked-post/:userId', async(req, res) => {
-    try {
-        const { userId } = req.params;
-        const likedPosts = await pool.query('SELECT * FROM post WHERE $1=ANY(liked_users)', [userId]);
-        res.json(likedPosts.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-})
+//get all liked posts by the current account
+app.get('/liked-post/:userId', post_controller.get_user_liked_posts);
 
 //get a post
-app.get('/post/:postId', async (req, res) => {
-    try {
-        const { postId } = req.params;
-        const post = await pool.query('SELECT * FROM post WHERE post_id=$1', [postId]);
-        res.json(post.rows);
-    } catch (error) {
-        req.json(error.message)
-    }
-});
+app.get('/post/:postId', post_controller.get_post);
 
 //update a post
-app.patch('/post/:postId', async (req, res) => {
-    try {
-        const { postId } = req.params;
-        const { content } = req.body;
-        const updatedPost = await pool.query('UPDATE post SET content=$1 WHERE post_id=$2 RETURNING *', [content, postId]);
-        res.json(updatedPost.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+app.patch('/post/:postId', post_controller.update_post);
 
 //delete a post
-app.delete('/post/:postId', async(req, res) => {
-    try {
-        const { postId } = req.params;
-        const deletedPost = await pool.query('DELETE FROM post WHERE post_id=$1', [postId]);
-        res.json(deletedPost.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
-
-// POST FEATURES
-
-//like post
-app.patch('/like-post/', async (req, res) => {
-    try {
-        const { userId, postId } = req.query;
-        const updatedPost = await pool.query('UPDATE post SET liked_users= array_append(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
-        res.json(updatedPost.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
-
-//unlike post
-app.patch('/unlike-post/', async (req, res) => {
-    try {
-        const { userId, postId } = req.query;
-        const updatedPost = await pool.query('UPDATE post SET liked_users = array_remove(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
-        res.json(updatedPost.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+app.delete('/post/:postId', post_controller.delete_post);
 
 app.listen(3001, () => {
     console.log("Server has started on port 3001");
