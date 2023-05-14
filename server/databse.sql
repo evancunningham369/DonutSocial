@@ -4,6 +4,7 @@ CREATE TABLE account(
     user_id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username VARCHAR(15),
     hashPass VARCHAR(60),
+    followed_users integer[];
     UNIQUE username
 );
 

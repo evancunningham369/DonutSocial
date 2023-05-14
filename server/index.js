@@ -13,7 +13,7 @@ app.use(express.json());
 //ACCOUNT USER ROUTES//
 
 //create a user
-app.post('/register', async (req, res) => {
+app.post('/register', async(req, res) => {
     try {
         const { username, password } = req.body;
         const saltRounds = 5;
@@ -47,12 +47,46 @@ app.post('/login', async(req, res) => {
         res.json(error.message);    
     }
 });
+//ACCOUNT ACTION ROUTES
+
+//get a user
+app.get('/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await pool.query('SELECT * FROM account WHERE user_id=$1', [userId]);
+        res.json(user.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
+
+//follow user
+app.patch('/follow-user/', async (req, res) => {
+    try {
+        const { userId, userToFollow } = req.query;
+        const user = await pool.query('UPDATE account SET followed_users = array_append(followed_users, $2) WHERE user_id=$1 RETURNING *', [userId, userToFollow])
+        res.json(user.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+});
+
+//unfollow user
+app.patch('/unfollow-user/', async(req, res) => {
+    try {
+        const { userId, userToUnfollow } = req.query;
+        const user = await pool.query('UPDATE account SET followed_users = array_remove(followed_users, $2) WHERE user_id=$1', [userId, userToUnfollow]);
+        res.json(user.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+})
 
 //ACCOUNT POST ROUTES//
 
 //create a post
 
-app.post('/post', async (req, res) => {
+app.post('/post', async(req, res) => {
     try {
         const dateTime = new Date(Date.now()).toISOString();
         const {content, userId} = req.body;
@@ -67,7 +101,7 @@ app.post('/post', async (req, res) => {
 });
 
 //get all user posts
-app.get('/posts/:userId', async (req, res) => {
+app.get('/posts/:userId', async(req, res) => {
     try {
         const { userId } = req.params;
         const allPosts = await pool.query('SELECT * FROM post WHERE user_id=$1', [userId]);
@@ -76,6 +110,18 @@ app.get('/posts/:userId', async (req, res) => {
         res.json(error.message);
     }
 });
+
+//get all posts by followed users
+app.get('/followed-user-posts/:userId', async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const users_followed = await pool.query('SELECT followed_users FROM account WHERE user_id=$1', [userId]);
+        const followingPosts = await pool.query('SELECT * FROM post WHERE user_id=ANY($1)', [users_followed.rows[0].followed_users]);
+        res.json(followingPosts.rows);
+    } catch (error) {
+        res.json(error.message);
+    }
+})
 
 //get all liked posts by user
 app.get('/liked-post/:userId', async(req, res) => {
@@ -125,9 +171,9 @@ app.delete('/post/:postId', async(req, res) => {
 // POST FEATURES
 
 //like post
-app.patch('/like-post/:userId/:postId', async (req, res) => {
+app.patch('/like-post/', async (req, res) => {
     try {
-        const { userId, postId } = req.params;
+        const { userId, postId } = req.query;
         const updatedPost = await pool.query('UPDATE post SET liked_users= array_append(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
         res.json(updatedPost.rows);
     } catch (error) {
@@ -136,9 +182,9 @@ app.patch('/like-post/:userId/:postId', async (req, res) => {
 });
 
 //unlike post
-app.patch('/unlike-post/:userId/:postId', async (req, res) => {
+app.patch('/unlike-post/', async (req, res) => {
     try {
-        const { userId, postId } = req.params;
+        const { userId, postId } = req.query;
         const updatedPost = await pool.query('UPDATE post SET liked_users = array_remove(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
         res.json(updatedPost.rows);
     } catch (error) {
