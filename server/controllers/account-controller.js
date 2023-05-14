@@ -1,6 +1,11 @@
 import bcrypt from 'bcrypt';
 import { pool } from "../db.js";
 
+/**
+ * File for API handlers for user accounts
+ */
+
+// Register account in database
 export const register_account = async(req, res) => {
     try {
         const { username, password } = req.body;
@@ -17,6 +22,7 @@ export const register_account = async(req, res) => {
     }
 }
 
+// Login and verify account in database
 export const login_account = async(req, res) => {
     try {
         const { username, password } = req.body;
@@ -36,6 +42,7 @@ export const login_account = async(req, res) => {
     }
 }
 
+// Get account in database
 export const get_account = async(req, res) => {
     try {
         const { userId } = req.params;

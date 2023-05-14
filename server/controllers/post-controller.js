@@ -1,5 +1,10 @@
 import { pool } from "../db.js";
 
+/**
+ * File to hold API requests for social media posts
+ */
+
+// Creates a post in the database for the account
 export const create_post = async(req, res) => {
     try {
         const dateTime = new Date(Date.now()).toISOString();
@@ -14,6 +19,7 @@ export const create_post = async(req, res) => {
     }
 }
 
+// Updates the post with new content
 export const update_post = async (req, res) => {
     try {
         const { postId } = req.params;
@@ -25,6 +31,18 @@ export const update_post = async (req, res) => {
     }
 }
 
+// Get a post
+export const get_post = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const post = await pool.query('SELECT * FROM post WHERE post_id=$1', [postId]);
+        res.json(post.rows);
+    } catch (error) {
+        req.json(error.message)
+    }
+}
+
+// Gets all posts that the user is following
 export const get_user_following_posts = async(req, res) => {
     try {
         const { userId } = req.params;
@@ -36,6 +54,7 @@ export const get_user_following_posts = async(req, res) => {
     }
 }
 
+// Gets all posts that the user has liked
 export const get_user_liked_posts = async(req, res) => {
     try {
         const { userId } = req.params;
@@ -46,6 +65,7 @@ export const get_user_liked_posts = async(req, res) => {
     }
 }
 
+// Gets all user posts
 export const get_user_posts = async(req, res) => {
     try {
         const { userId } = req.params;
@@ -56,16 +76,7 @@ export const get_user_posts = async(req, res) => {
     }
 }
 
-export const get_post = async (req, res) => {
-    try {
-        const { postId } = req.params;
-        const post = await pool.query('SELECT * FROM post WHERE post_id=$1', [postId]);
-        res.json(post.rows);
-    } catch (error) {
-        req.json(error.message)
-    }
-}
-
+// Delete a post
 export const delete_post = async(req, res) => {
     try {
         const { postId } = req.params;

@@ -1,5 +1,9 @@
 import { pool } from "../db.js";
+/**
+ * File to hold API requests for user actions
+ */
 
+// Adds user to list of users user is following
 export const follow_user = async (req, res) => {
     try {
         const { userId, userToFollow } = req.query;
@@ -10,6 +14,7 @@ export const follow_user = async (req, res) => {
     }
 }
 
+// Removes user from list of users user is following
 export const unfollow_user = async(req, res) => {
     try {
         const { userId, userToUnfollow } = req.query;
@@ -20,6 +25,7 @@ export const unfollow_user = async(req, res) => {
     }
 }
 
+// Adds post to list of posts user liked
 export const like_post = async (req, res) => {
     try {
         const { userId, postId } = req.query;
@@ -30,6 +36,7 @@ export const like_post = async (req, res) => {
     }
 }
 
+// Removes post from list of posts that users has liked
 export const unlike_post = async (req, res) => {
     try {
         const { userId, postId } = req.query;
