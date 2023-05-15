@@ -1,9 +1,16 @@
+import * as dotenv from 'dotenv';
+dotenv.config({path: 'server/.env'});
+
 import express from 'express';
 const app = express();
 import cors from 'cors';
+
 import * as account_controller from './controllers/account-controller.js';
 import * as user_controller from './controllers/user-controller.js';
 import * as post_controller from './controllers/post-controller.js';
+
+// Cloudinary Configuration
+import cloudinary from './config/config.js';
 
 //middleware
 app.use(cors());

@@ -5,6 +5,7 @@ CREATE TABLE account(
     username VARCHAR(15),
     hashPass VARCHAR(60),
     followed_users integer[];
+    profile_picture bytea;
     UNIQUE username
 );
 
