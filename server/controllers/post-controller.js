@@ -1,4 +1,4 @@
-import { pool } from "../db.js";
+import { pool } from "../config/config.js";
 
 /**
  * File to hold API requests for social media posts

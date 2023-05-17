@@ -1,8 +1,5 @@
 import bcrypt from 'bcrypt';
-import { pool } from "../db.js";
-
-// Cloudinary Configuration
-import cloudinary from '../config/config.js';
+import { pool, cloudinary } from "../config/config.js";
 
 /**
  * File for API handlers for user accounts
