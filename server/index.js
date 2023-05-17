@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config({path: 'server/.env'});
-
 import express from 'express';
 const app = express();
 import cors from 'cors';
@@ -8,9 +5,6 @@ import cors from 'cors';
 import * as account_controller from './controllers/account-controller.js';
 import * as user_controller from './controllers/user-controller.js';
 import * as post_controller from './controllers/post-controller.js';
-
-// Cloudinary Configuration
-import cloudinary from './config/config.js';
 
 //middleware
 app.use(cors());
@@ -28,6 +22,12 @@ app.post('/login', account_controller.login_account);
 
 //get an account
 app.get('/:userId', account_controller.get_account);
+
+//upload account profile picture
+app.post('/upload-profile-picture', account_controller.upload_profile_picture);
+
+//get account profile picture
+app.get('/profile-picture/:profilePictureId', account_controller.get_profile_picture);
 
 //ACCOUNT USER ACTION ROUTES
 

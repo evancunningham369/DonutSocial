@@ -1,7 +1,8 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { v2 as cloudinary } from 'cloudinary';
 
 // Postgres configuration
-
 
 // Cloudinary configuration
 cloudinary.config({
