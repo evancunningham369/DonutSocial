@@ -16,7 +16,7 @@ export const register_account = async(req, res) => {
              [username, hashPass]
              );
 
-        res.json(newAccount);
+        res.json(`User ${newAccount.rows[0].username} has successfully registered`);
     } catch (error) {
         error.constraint != undefined && res.json("User with that name already exists!");
     }
@@ -36,7 +36,7 @@ export const login_account = async(req, res) => {
         if(!match){
             throw new Error("Incorrect password!");
         }
-        res.json(user);
+        res.json(`${user.username} successfully logged in`);
     } catch (error) {
         res.json(error.message);    
     }
