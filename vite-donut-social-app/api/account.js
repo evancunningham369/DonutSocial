@@ -6,7 +6,7 @@ export const register = async(user) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(user)
     });
-    return serverResponse.json();
+    return serverResponse;
 }
 
 export const login = async(user) => {
@@ -15,5 +15,5 @@ export const login = async(user) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(user)
     });
-    return serverResponse.json();
+    return serverResponse;
 }

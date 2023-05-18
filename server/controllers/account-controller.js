@@ -9,16 +9,19 @@ import { pool, cloudinary } from "../config/config.js";
 export const register_account = async(req, res) => {
     try {
         const { username, password } = req.body;
+        if(!username || !password){
+            res.status(400).json('Username or password fields cannot be empty');
+        }
         const saltRounds = 5;
         var hashPass = await bcrypt.hash(password, saltRounds);
         const newAccount = await pool.query(
-            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING username',
+            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING user_id',
              [username, hashPass]
              );
 
-        res.json(`User ${newAccount.rows[0].username} has successfully registered`);
+        res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id});
     } catch (error) {
-        error.constraint != undefined && res.json("User with that name already exists!");
+        error.constraint != undefined && res.status(400).json("User with that name already exists!");
     }
 }
 
@@ -36,9 +39,9 @@ export const login_account = async(req, res) => {
         if(!match){
             throw new Error("Incorrect password!");
         }
-        res.json(`${user.username} successfully logged in`);
+        res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id});
     } catch (error) {
-        res.json(error.message);    
+        res.status(400).json(error.message);
     }
 }
 
