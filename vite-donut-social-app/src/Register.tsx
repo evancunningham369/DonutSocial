@@ -34,7 +34,7 @@ function Register() {
     <h2>{serverResponse}</h2>
       <form action="" onSubmit={handleSubmit}>
         <label htmlFor="">Username: </label>
-        <input name='username' value='user1' type="text" />
+        <input name='username' value='user2' type="text" />
         <label htmlFor="">Password: </label>
         <input name='password' value='123' type="password" />
         <button name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>

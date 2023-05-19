@@ -38,7 +38,17 @@ export const get_post = async (req, res) => {
         const post = await pool.query('SELECT * FROM post WHERE post_id=$1', [postId]);
         res.json(post.rows);
     } catch (error) {
-        req.json(error.message)
+        res.json(error.message)
+    }
+}
+
+// Get all posts
+export const get_all_posts = async(req, res) => {
+    try {
+        const allPosts = await pool.query('SELECT * FROM post');
+        res.json(allPosts.rows);
+    } catch (error) {
+        res.json(error.message);
     }
 }
 
