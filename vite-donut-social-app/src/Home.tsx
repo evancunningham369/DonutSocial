@@ -5,7 +5,13 @@ import * as post_req from '../api/post.js';
 function Home(){
     let userId = sessionStorage.getItem('userId');
     const [posts, setPosts] = useState([]);
+    const [selection, setSelection] = useState("");
+    const [liked, setLiked] = useState(false);
     
+    useEffect(() => {
+        post_req.get_all_posts().then((posts) => setPosts(posts));
+    }, [])
+
     const createPost = async(e) => {
         const { content } = e.target;
         
@@ -14,26 +20,32 @@ function Home(){
             userId: userId
         }
         
-        const serverResponse = await create_post(post);
+        await post_req.create_post(post);
     }
 
     const getPost = async(e) => {
+        setLiked(false);
         const { id } = e.target;
-        let data;
-        switch(id){
-            case 'general-feed': data = await post_req.get_all_posts();
-            break;
-            case 'my-posts': data = await post_req.get_my_posts(userId);
-            break;
-            case 'following': data = await post_req.get_following_posts(userId);
-            break;
-            case 'liked-posts': data = await post_req.get_liked_posts(userId);
-        }
+        if(id == selection) return;
 
-        const allPosts = await data.json();
-        
+        let allPosts;
+        switch(id){
+            case 'general-feed': 
+            allPosts = await post_req.get_all_posts();
+            setSelection('general-feed');
+            break;
+            case 'my-posts': allPosts = await post_req.get_my_posts(userId);
+            setSelection('my-posts');
+            break;
+            case 'following': allPosts = await post_req.get_following_posts(userId);
+            setSelection('following');
+            break;
+            case 'liked-posts': 
+            allPosts = await post_req.get_liked_posts(userId);
+            setLiked(true);
+            setSelection('liked-posts');
+        }
         setPosts(allPosts);
-        
     }
 
 
@@ -46,7 +58,7 @@ function Home(){
         </form>
         <div className='btn-group'>
             <label className='btn btn-primary'>
-                <input id='general-feed' onClick={getPost} type="radio" name='options' /> General Feed
+                <input id='general-feed' onClick={getPost} type="radio" name='options' defaultChecked/> General Feed
             </label>
             <label className='btn btn-primary'>
                 <input id='my-posts' onClick={getPost} type="radio" name='options' /> My Posts
@@ -58,7 +70,7 @@ function Home(){
                 <input id='liked-posts' onClick={getPost} type="radio" name='options' /> Liked Posts
             </label>
         </div>
-        {posts.map((post) => <Post key={post.post_id} userId={userId} post={post} />)}
+        {posts.map((post) => <Post key={post.post_id} userId={userId} post={post} liked={liked} />)}
         </>
     )
 }

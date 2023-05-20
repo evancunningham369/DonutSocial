@@ -9,17 +9,21 @@ export const create_post = async(post) => {
 }
 
 export const get_my_posts = async(userId) => {
-    return await fetch(`${BASE_URL}/posts/${userId}`);
+    let serverResponse = await fetch(`${BASE_URL}/posts/${userId}`);
+    return await serverResponse.json();
 }
 
 export const get_all_posts = async() => {
-    return await fetch(`${BASE_URL}/posts/all-posts`);
+    let serverResponse = await fetch(`${BASE_URL}/posts/all-posts`);
+    return await serverResponse.json();
 }
 
 export const get_following_posts = async(userId) => {
-    return await fetch(`${BASE_URL}/followed-user-posts/${userId}`);
+    let serverResponse = await fetch(`${BASE_URL}/followed-user-posts/${userId}`);
+    return await serverResponse.json();
 }
 
 export const get_liked_posts = async(userId) => {
-    return await fetch(`${BASE_URL}/liked-posts/${userId}`);
+    let serverResponse = await fetch(`${BASE_URL}/liked-posts/${userId}`);
+    return await serverResponse.json();
 }
