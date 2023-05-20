@@ -13,3 +13,10 @@ export const unlike_post = async(userId, postId) => {
         headers: {"Content-Type": "application/json"}
     });
 }
+
+export const delete_post = async(postId) => {
+    return await fetch(`${BASE_URL}/post/${postId}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"}
+    });
+}
