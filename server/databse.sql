@@ -14,7 +14,8 @@ CREATE TABLE post(
     content VARCHAR(255) NOT NULL,
     post_datetime TIMESTAMP,
     user_id int REFERENCES account,
-    liked_users integer[];
+    liked_users integer[],
+    liked BOOLEAN DEFAULT FALSE;
 );
 /*
 CHANGE COLUMN NAME

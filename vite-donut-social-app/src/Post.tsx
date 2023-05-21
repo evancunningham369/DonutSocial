@@ -1,24 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as user_action from '../api/user.js';
+import * as post_req from '../api/post.js';
 
 function Post(props){
-    
-    const { loggedInUserId, userIdPoster, liked, post: { post_id: postId, content, post_datetime } } = props
+    const { loggedInUserId, userIdPoster, post: { post_id: postId, content, post_datetime } } = props
+    const [likeText, setLikedText] = useState("Like");
 
-    const postByCurrentUser = loggedInUserId == userIdPoster;
-    const initialLikeStatus = liked ? "Unlike" : "Like";
-    
-    const [like, setLike] = useState(liked);
-    const [likeText, setLikeText] = useState(initialLikeStatus);
-
-    const handleLike = async() => {
-        
-        const response = like ? await user_action.unlike_post(loggedInUserId, postId): await user_action.like_post(loggedInUserId, postId);
-        
-        if(response.ok){ 
-            setLike(!like);
-            setLikeText(!like ? "Unlike": "Like");
+    useEffect(() => {
+        async function setInitialText(){
+            try {
+                const data = await post_req.get_liked_posts_by_id(loggedInUserId);
+                if(data.liked_posts == null) return;
+                const isPostLiked = data.liked_posts.includes(postId);
+                setLikedText(isPostLiked ? "Unlike": "Like");
+            } catch (error) {
+                return;
+            }
         }
+        setInitialText();
+    }, [])
+
+    
+    const postByCurrentUser = loggedInUserId == userIdPoster;
+    
+    const handleLike = async() => {
+        setLikedText(likeText == "Like" ? "Unlike" : "Like");
+        
+        const response = likeText == "Like" ?  await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
     }
 
     const deletePost = async() => {

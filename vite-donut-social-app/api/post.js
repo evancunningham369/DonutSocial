@@ -27,3 +27,8 @@ export const get_liked_posts = async(userId) => {
     let serverResponse = await fetch(`${BASE_URL}/liked-posts/${userId}`);
     return await serverResponse.json();
 }
+
+export const get_liked_posts_by_id = async(userId) => {
+    let serverResponse = await fetch(`${BASE_URL}/liked-posts-id/${userId}`);
+    return await serverResponse.json();
+}

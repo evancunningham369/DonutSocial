@@ -48,6 +48,9 @@ app.patch('/unlike-post/', user_controller.unlike_post);
 //create a post
 app.post('/post', post_controller.create_post);
 
+//get a post
+app.get('/post/:postId', post_controller.get_post);
+
 //get all posts
 app.get('/posts/all-posts', post_controller.get_all_posts);
 
@@ -60,8 +63,8 @@ app.get('/followed-user-posts/:userId', post_controller.get_user_following_posts
 //get all liked posts by the current account
 app.get('/liked-posts/:userId', post_controller.get_user_liked_posts);
 
-//get a post
-app.get('/post/:postId', post_controller.get_post);
+//get all liked posts by post_id by the current account
+app.get('/liked-posts-id/:userId', post_controller.get_user_liked_posts_id);
 
 //update a post
 app.patch('/post/:postId', post_controller.update_post);

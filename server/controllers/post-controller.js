@@ -75,6 +75,17 @@ export const get_user_liked_posts = async(req, res) => {
     }
 }
 
+// Gets all post_ids that the user has liked
+export const get_user_liked_posts_id = async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const likedPostIds = await pool.query('SELECT liked_posts FROM account WHERE user_id=$1', [userId]);
+        res.send(likedPostIds.rows[0]);
+    } catch (error) {
+        res.json(error.message);
+    }
+}
+
 // Gets all user posts
 export const get_user_posts = async(req, res) => {
     try {
@@ -91,6 +102,7 @@ export const delete_post = async(req, res) => {
     try {
         const { postId } = req.params;
         const deletedPost = await pool.query('DELETE FROM post WHERE post_id=$1', [postId]);
+        const deleteAccountLikes = await pool.query('UPDATE account SET liked_posts = array_remove(liked_posts, $1)', [postId]);
         res.json(deletedPost.rows);
     } catch (error) {
         res.json(error.message);

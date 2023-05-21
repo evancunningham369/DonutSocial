@@ -6,8 +6,7 @@ function Home(){
     let loggedInUserId = sessionStorage.getItem('userId');
     const [posts, setPosts] = useState([]);
     const [selection, setSelection] = useState("");
-    const [liked, setLiked] = useState(false);
-    
+
     useEffect(() => {
         post_req.get_all_posts().then((posts) => setPosts(posts));
     }, [])
@@ -24,28 +23,28 @@ function Home(){
     }
 
     const getPost = async(e) => {
-        setLiked(false);
         const { id } = e.target;
         if(id == selection) return;
 
         let allPosts;
         switch(id){
             case 'general': 
-            allPosts = await post_req.get_all_posts();
-            setSelection('general');
-            break;
-            case 'user': allPosts = await post_req.get_my_posts(loggedInUserId);
-            setSelection('user');
-            break;
-            case 'following': allPosts = await post_req.get_following_posts(loggedInUserId);
-            setSelection('following');
-            break;
+                allPosts = await post_req.get_all_posts();
+                setSelection('general');
+                break;
+            case 'user': 
+                allPosts = await post_req.get_my_posts(loggedInUserId);
+                setSelection('user');
+                break;
+            case 'following': 
+                allPosts = await post_req.get_following_posts(loggedInUserId);
+                setSelection('following');
+                break;
             case 'liked': 
-            allPosts = await post_req.get_liked_posts(loggedInUserId);
-            setLiked(true);
-            setSelection('liked');
+                allPosts = await post_req.get_liked_posts(loggedInUserId);
+                setSelection('liked');
         }
-        
+
         setPosts(allPosts);
     }
 
@@ -73,7 +72,7 @@ function Home(){
         </div>
         {posts.length == 0 ? 
         <h1>No {selection} posts</h1> :
-        posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} loggedInUserId={loggedInUserId} post={post} liked={liked} />)}
+        posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} loggedInUserId={loggedInUserId} post={post} />)}
         </>
     )
 }
