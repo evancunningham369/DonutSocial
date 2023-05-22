@@ -52,6 +52,7 @@ function Home(){
     return (
         <>
         <h2>User {loggedInUserId} logged in</h2>
+        <h3><a href="/profile">View Profile</a></h3>
         <form id="create-post" onSubmit={createPost}>
             <input name='content' type="text" />
             <button type='submit'>Post</button>

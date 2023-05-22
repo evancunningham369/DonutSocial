@@ -27,7 +27,7 @@ app.get('/:userId', account_controller.get_account);
 app.post('/upload-profile-picture', account_controller.upload_profile_picture);
 
 //get account profile picture
-app.get('/profile-picture/:profilePictureId', account_controller.get_profile_picture);
+app.get('/profile-picture/:userId', account_controller.get_profile_picture);
 
 //ACCOUNT USER ACTION ROUTES
 
