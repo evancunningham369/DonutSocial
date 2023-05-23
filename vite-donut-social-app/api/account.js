@@ -32,8 +32,8 @@ export const get_profile_picture = async(userId) => {
   return serverResponse.json();
 }
 
-export const remove_profile_picture = async(profilePictureId) => {
-  let serverResponse = await fetch (`${BASE_URL}/remove-profile-picture/${profilePictureId}`, {
+export const delete_profile_picture = async(userId) => {
+  let serverResponse = await fetch (`${BASE_URL}/delete-profile-picture/${userId}`, {
     method: "POST"
   });
   return serverResponse.json();

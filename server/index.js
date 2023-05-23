@@ -29,6 +29,9 @@ app.post('/upload-profile-picture', account_controller.upload_profile_picture);
 //get account profile picture
 app.get('/profile-picture/:userId', account_controller.get_profile_picture);
 
+//remove account profile picture
+app.post('/delete-profile-picture/:userId', account_controller.delete_profile_picture);
+
 //ACCOUNT USER ACTION ROUTES
 
 //follow user
