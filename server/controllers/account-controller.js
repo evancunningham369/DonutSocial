@@ -112,3 +112,16 @@ export const is_user_following = async(req, res) => {
         res.json(error.message);
     }
 }
+
+export const get_profile_info = async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const following = await pool.query('SELECT COALESCE(array_length(followed_users, 1), 0) as followingCount FROM account WHERE user_id=$1', [userId]);
+        const follower = await pool.query('SELECT COALESCE(array_length(followers, 1), 0) as followerCount FROM account WHERE user_id=$1', [userId]);
+        const profileInfo = {followingCount: following.rows[0].followingcount, followerCount: follower.rows[0].followercount}
+        res.json(profileInfo);
+    } catch (error) {
+        console.log(error);
+        res.json(error.message);
+    }
+}

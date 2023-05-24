@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import * as user_action from '../api/user.js';
 import * as post_req from '../api/post.js';
 import { get_profile_picture } from '../api/account.js';
+import donut from './donut.jpg';
 import { Link } from 'react-router-dom';
 
 function Post(props){
@@ -12,7 +13,7 @@ function Post(props){
     
     useEffect(() => {
         get_profile_picture(userIdPoster).then(profilePic => {
-            setPostProfilePicture(profilePic);
+            setPostProfilePicture(profilePic ? profilePic : donut);
         });
         async function setInitialText(){
             try {

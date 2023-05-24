@@ -7,7 +7,8 @@ import { pool } from "../config/config.js";
 export const follow_user = async (req, res) => {
     try {
         const { userId, userToFollow } = req.query;
-        const user = await pool.query('UPDATE account SET followed_users = array_append(followed_users, $2) WHERE user_id=$1 RETURNING *', [userId, userToFollow])
+        const user = await pool.query('UPDATE account SET followed_users = array_append(followed_users, $2) WHERE user_id=$1 RETURNING *', [userId, userToFollow]);
+        const followedUser = await pool.query('UPDATE account SET followers = array_append(followers, $2) WHERE user_id=$1', [userToFollow, userId]);
         res.json(user.rows);
     } catch (error) {
         res.json(error.message);
@@ -19,6 +20,7 @@ export const unfollow_user = async(req, res) => {
     try {
         const { userId, userToUnfollow } = req.query;
         const user = await pool.query('UPDATE account SET followed_users = array_remove(followed_users, $2) WHERE user_id=$1', [userId, userToUnfollow]);
+        const unfollowedUser = await pool.query('UPDATE account SET followers = array_remove(followers, $2) WHERE user_id=$1', [userToUnfollow, userId]);
         res.json(user.rows);
     } catch (error) {
         res.json(error.message);

@@ -12,15 +12,25 @@ function Profile(){
     const [profilePicture, setProfilePicture] = useState(location.state.profilePicture);
     const [followText, setFollowText] = useState('Follow');
     const fileInputRef = useRef();
-    const followers = 0;
-    const following = 0;
+    const [following, setFollowing] = useState();
+    const [followers, setFollowers] = useState();
 
     const userFollowingProfile = async() => {
         const isUserFollowing = await account_req.user_following_profile(loggedInUserId, userId);
         setFollowText(isUserFollowing.is_following ? "Unfollow": "Follow");
     }
 
+    const getProfileInfo = async() => {
+        const profileInfo = await account_req.get_profile_info(userId);
+        
+        const { followingCount: following, followerCount: followers } = profileInfo;
+        
+        setFollowers(followers);
+        setFollowing(following);
+    }
+
     useEffect(() => {
+        getProfileInfo();
         if(isOwnProfile) return;
         userFollowingProfile();
     }, [])
@@ -77,6 +87,9 @@ function Profile(){
             <div className="account-info">
                     <h4>Followers: {followers}</h4>
                     <h4>Following: {following}</h4>
+            </div>
+            <div className="user-posts">
+
             </div>
         </>
     )

@@ -46,3 +46,8 @@ export const user_following_profile = async(userId, profileId) => {
   });
   return serverResponse.json();
 }
+
+export const get_profile_info = async(userId) => {
+  let serverResponse = await fetch(`${BASE_URL}/profile-info/${userId}`);
+  return await serverResponse.json();
+}
