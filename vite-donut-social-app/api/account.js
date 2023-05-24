@@ -38,3 +38,11 @@ export const delete_profile_picture = async(userId) => {
   });
   return serverResponse.json();
 }
+
+export const user_following_profile = async(userId, profileId) => {
+  let serverResponse = await fetch(`${BASE_URL}/user-following/?userId=${userId}&profileId=${profileId}`, {
+    method: 'POST',
+    headers: {"Content-Type": "application/json"}
+  });
+  return serverResponse.json();
+}

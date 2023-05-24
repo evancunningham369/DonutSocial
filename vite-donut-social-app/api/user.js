@@ -20,3 +20,17 @@ export const delete_post = async(postId) => {
         headers: {"Content-Type": "application/json"}
     });
 }
+
+export const follow_user = async(userId, userIdToFollow) => {
+    return await fetch(`${BASE_URL}/follow-user/?userId=${userId}&userToFollow=${userIdToFollow}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"}
+    });
+}
+
+export const unfollow_user = async(userId, userIdToUnfollow) => {
+    return await fetch(`${BASE_URL}/unfollow-user/?userId=${userId}&userToUnfollow=${userIdToUnfollow}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"}
+    });
+}

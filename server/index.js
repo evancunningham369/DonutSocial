@@ -75,6 +75,9 @@ app.patch('/post/:postId', post_controller.update_post);
 //delete a post
 app.delete('/post/:postId', post_controller.delete_post);
 
+// ACCOUNT CHECK ROUTES
+app.post('/user-following/', account_controller.is_user_following);
+
 app.listen(3001, () => {
     console.log("Server has started on port 3001");
 });

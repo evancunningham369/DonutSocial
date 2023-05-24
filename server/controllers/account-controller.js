@@ -100,3 +100,15 @@ export const delete_profile_picture = async(req, res) => {
         res.json(error);
     }
 }
+
+export const is_user_following = async(req, res) => {
+    try {
+        const { userId, profileId } = req.query;
+        const followed = await pool.query('SELECT followed_users FROM account WHERE user_id=$1', [userId]);
+        const followed_users = followed.rows[0].followed_users;
+        const response = await pool.query('SELECT $1 = ANY($2) as is_following', [profileId, followed_users]);
+        res.json(response.rows[0]);
+    } catch (error) {
+        res.json(error.message);
+    }
+}
