@@ -48,17 +48,10 @@ function Home(){
                 allPosts = await post_req.get_all_posts();
                 setSelection('general');
                 break;
-            case 'user': 
-                allPosts = await post_req.get_my_posts(loggedInUserId);
-                setSelection('user');
-                break;
             case 'following': 
                 allPosts = await post_req.get_following_posts(loggedInUserId);
                 setSelection('following');
                 break;
-            case 'liked': 
-                allPosts = await post_req.get_liked_posts(loggedInUserId);
-                setSelection('liked');
         }
 
         setPosts(allPosts);
@@ -79,13 +72,7 @@ function Home(){
                 <input id='general' onClick={getPost} type="radio" name='options' defaultChecked/> General Feed
             </label>
             <label className='btn btn-primary'>
-                <input id='user' onClick={getPost} type="radio" name='options' /> My Posts
-            </label>
-            <label className='btn btn-primary'>
                 <input id='following' onClick={getPost} type="radio" name='options' /> Following
-            </label>
-            <label className='btn btn-primary'>
-                <input id='liked' onClick={getPost} type="radio" name='options' /> Liked Posts
             </label>
         </div>
         {posts.length == 0 ? 
