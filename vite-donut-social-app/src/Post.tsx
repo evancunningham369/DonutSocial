@@ -44,7 +44,7 @@ function Post(props){
     }
 
     return (
-        <>
+        <div className='post'>
             <hr className='solid'/>
             <Link to='/profile' state={{userId: userIdPoster ,profilePicture: postProfilePic}}>
                 <img style={{display: 'inline',width: '25px', height: '25px'}} src={postProfilePic} alt="post profile picture" />
@@ -54,7 +54,7 @@ function Post(props){
             <p>{post_datetime}</p>
             <button onClick={handleLike}>{likeText}</button>
             {postByCurrentUser && (<button onClick={deletePost}>Delete Post</button>)}
-        </>
+        </div>
     );
 }
 

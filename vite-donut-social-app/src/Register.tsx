@@ -29,18 +29,25 @@ function Register() {
   }
 
   return (
-    <>
-    <h1>Register/Log-In</h1>
-    <h2>{serverResponse}</h2>
-      <form action="" onSubmit={handleSubmit}>
-        <label htmlFor="">Username: </label>
-        <input name='username' defaultValue='user1' type="text" />
-        <label htmlFor="">Password: </label>
-        <input name='password' defaultValue='123' type="password" />
-        <button name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>
-        <button name='login' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Log-In</button>
-      </form>
-    </>
+    <div className="page">
+      <div className='register-form'>
+        <h1 id='register-title'>Register/Log-In</h1>
+          <form className='register-field' action="" onSubmit={handleSubmit}>
+            <label id='username' htmlFor="username">Username: 
+              <input name='username' defaultValue='user1' type="text" />
+            </label>
+            <label id='password' htmlFor="password">Password: 
+              <input name='password' defaultValue='123' type="password" />
+            </label>
+            <div id="submit-buttons">
+              <button name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>
+              <button name='login' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Log-In</button>
+            </div>
+            <h2 id='register-response'>{serverResponse}</h2>
+          </form>
+      </div>
+    </div>
+
   )
 }
 

@@ -7,7 +7,7 @@ import {BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
     return (
-      <div>
+      <>
         <Header />
       <BrowserRouter>
           <Routes>
@@ -16,7 +16,7 @@ function App() {
             <Route path="/profile" element={<Profile/>}/>
           </Routes>
       </BrowserRouter>
-      </div>
+      </>
     );
   }
 

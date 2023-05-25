@@ -1,6 +1,6 @@
 function Header(){
     return (
-        <h1 style={{backgroundColor: 'red', width: '100%', textAlign: 'center'}}>Donut Social</h1>
+        <h1 id="header">Donut Social</h1>
     )
 }
 
