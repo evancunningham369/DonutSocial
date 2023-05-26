@@ -19,7 +19,7 @@ export const register_account = async(req, res) => {
              [username, hashPass]
              );
 
-        res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id});
+        res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id, username: username});
     } catch (error) {
         error.constraint != undefined && res.status(400).json("User with that name already exists!");
     }
@@ -39,7 +39,7 @@ export const login_account = async(req, res) => {
         if(!match){
             throw new Error("Incorrect password!");
         }
-        res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id});
+        res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id, username: user.username});
     } catch (error) {
         res.status(400).json(error.message);
     }

@@ -1,11 +1,11 @@
-body, html{
-    margin: 0px;
-    padding: 0px;
-}
-
-body{
-    height: 100vh;
-    position: relative;
+html,
+body,
+#root,
+main {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
 }
 
 #header{
@@ -14,45 +14,131 @@ body{
     padding: .5em;
     text-align: center;
 }
-
-.page{
-    height: 100vh;
-    position: relative;
-}
-#register-response{
-    color: red;
-}
-
-.register-form{
-    position: absolute;
-    left: 35%;
-    right: 35%;
-    top: 0;
-    bottom: 50%;
-}
-
-#register-title{
-    text-align: center;
-}
-
-.register-field{
+/*
+    REGISTER/LOGIN PAGE STYLES
+*/
+.form-container{
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 85%;
+  }
+  
+  .form-signin {
+    min-width: 330px;
+  }
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .form-signin input[type="username"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  .list-group{
+    --bs-list-group-item-padding-x: 1rem;
+    --bs-list-group-item-padding-y: 1.5rem;
+  }
+
+  /*
+  HOME PAGE STYLES
+  */
+  #home{
+    margin: 1em;
+  }
+  /*
+  POST STYLES FOR ALL PAGES
+  */
+  .post-header{
+      display: flex;
+      margin: 1em;
+      justify-content: space-between;
+    }
+    .post-header .button-options{
+        align-self: flex-end;
+    }
+
+    .post-header #create-post{
+        align-self: flex-end;
+    }
+  .posts{
+    border: 5px blue solid;
+    display: flex;
+    flex-flow: column wrap;
     align-items: center;
 }
-.register-field input{
-    padding: 1em;
-    margin: 1em;
-}
 
-#submit-buttons{
-    display: flex;
-    width: 45%;
-    justify-content: space-between;
-}
-
-#submit-buttons button{
+.post{
     flex: 1;
-    margin: .2em;
+    width: 700px;
+    padding: 1em;
+    border: 2px red solid;
+    word-wrap: break-word;
+  }
+
+  .post .content{
     padding: .5em;
+  }
+
+  .post-heading{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .post-heading .post-datetime{
+    justify-self: flex-end;
+  }
+
+  .user-post-info{
+    display: flex;
+    width: 100px;
+    justify-content: space-between;
+  }
+
+  .post .post-action-btn-group{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .post button{
+    background-color: white;
+    border: none;
+  }
+
+  .post .like-btn{
+    color: blue;
+  }
+
+  .post .trash{
+    color: red;
+  }
+
+/*
+PROFILE STYLES
+*/
+
+.profile{
+  margin: 1em;
+}
+
+.profile-picture img{
+  width: 100px;
+  height: 150;
+}
+
+.profile-picture .avatar-buttons{
+  padding: .5em 0;
+}
+
+.profile .btn-group{
+  padding: .5em 0;
 }

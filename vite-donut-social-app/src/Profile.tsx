@@ -95,35 +95,35 @@ function Profile(){
     }
 
     return (
-        <>
+        <div className="profile">
             <h1>User {userId}'s Profile</h1>
             <div className="profile-picture">
-                <img style={{width: '100px', height:'100'}} src={profilePicture} alt="Profile Picture" />
-                {isOwnProfile ? <>
-                    <button onClick={() => {fileInputRef.current.click()}}>Upload Avatar</button>
-                    <input onChange={handleImage} multiple={false} ref={fileInputRef} type="file" hidden />
-                    <button onClick={removeProfilePicture} type="button">Remove Avatar</button>
-                </>: 
-                <button onClick={handleFollow}>{followText}</button>
-                }
+                <img src={profilePicture} alt="Profile Picture" />
+                <div className="avatar-buttons">
+                    {isOwnProfile ? <>
+                        <button onClick={() => {fileInputRef.current.click()}}>Upload Avatar</button>
+                        <input onChange={handleImage} multiple={false} ref={fileInputRef} type="file" hidden />
+                        <button onClick={removeProfilePicture} type="button">Remove Avatar</button>
+                    </>: 
+                    <button onClick={handleFollow}>{followText}</button>
+                    }
+                </div>
             </div>
             <div className="account-info">
                     <h4>Followers: {followers}</h4>
                     <h4>Following: {following}</h4>
             </div>
-            <div className='btn-group'>
-                <label className='btn btn-primary'>
-                    <input id='user' onClick={getPost} type="radio" name='options' defaultChecked /> My Posts
-                </label>
-                <label className='btn btn-primary'>
-                    <input id='liked' onClick={getPost} type="radio" name='options' /> Liked Posts
-                </label>
+            <div className='btn-group' role="group">
+                <input className='btn-check' id='user' onClick={getPost} type="radio" name='options' autoComplete="off" defaultChecked />
+                <label className='btn btn-outline-primary'htmlFor="user">My Posts</label>
+                <input className='btn-check' id='liked' onClick={getPost} type="radio" name='options' autoComplete="off" />
+                <label className='btn btn-outline-primary'htmlFor="liked">Liked Posts</label>
             </div>
             <div className="user-posts">
             {posts.length == 0 ? <h1>No {selection} posts</h1> : posts.map((post) =>
-                    <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} loggedInUserId={loggedInUserId} post={post}  />)}
+                    <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} loggedInUserId={loggedInUserId} initialPost={post}  />)}
             </div>
-        </>
+        </div>
     )
 }
 

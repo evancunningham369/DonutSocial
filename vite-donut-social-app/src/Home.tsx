@@ -7,6 +7,7 @@ import { get_profile_picture } from '../api/account.js';
 
 function Home(){
     let loggedInUserId = sessionStorage.getItem('userId');
+    let loggedInUsername = sessionStorage.getItem('username');
     const [posts, setPosts] = useState([]);
     const [selection, setSelection] = useState("");
     const [profilePicture, setProfilePicture] = useState();
@@ -53,32 +54,43 @@ function Home(){
                 setSelection('following');
                 break;
         }
-
+        
         setPosts(allPosts);
     }
 
+    const deletePost = (postId) => {
+        const newPosts = posts.filter(post => post.post_id !== postId);
+        setPosts(newPosts);
+    }
+
     return (
-        <>
-        <h2>User {loggedInUserId} logged in</h2>
-        <h3>
-            <Link to='/profile' state={{userId: loggedInUserId, profilePicture: profilePicture}}>View Profile</Link>
-        </h3>
-        <form id="create-post" onSubmit={createPost}>
-            <input name='content' type="text" />
-            <button type='submit'>Post</button>
-        </form>
-        <div className='btn-group'>
-            <label className='btn btn-primary'>
-                <input id='general' onClick={getPost} type="radio" name='options' defaultChecked/> General Feed
-            </label>
-            <label className='btn btn-primary'>
-                <input id='following' onClick={getPost} type="radio" name='options' /> Following
-            </label>
+    <div id='home'>
+        <div className='post-header'>
+            <div className="profile-info">
+                <h2>{loggedInUsername} logged in</h2>
+                <h3>
+                    <Link className='text-decoration-none' to='/profile' state={{userId: loggedInUserId, profilePicture: profilePicture}}>View Profile</Link>
+                </h3>
+            </div>
+            
+            <div className='btn-group button-options' role='group'>
+                <input id='general' className='btn-check' onClick={getPost} type="radio" name='options' autoComplete='off' defaultChecked/>
+                <label className='btn btn-outline-primary' htmlFor='general'>General Feed</label>
+                <input id='following' className='btn-check' onClick={getPost} type="radio" name='options' autoComplete='off' />
+                <label className='btn btn-outline-primary' htmlFor='following'>Following</label>
+            </div>
+
+            <form id="create-post" onSubmit={createPost}>
+                <input name='content' type="text" />
+                <button type='submit'>Post</button>
+            </form>
         </div>
-        {posts.length == 0 ? 
-        <h1>No {selection} posts</h1> :
-        posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} loggedInUserId={loggedInUserId} post={post} />)}
-        </>
+        <div className="posts">
+            {posts.length == 0 ? 
+            <h1>No {selection} posts</h1> :
+            posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} deletePost={deletePost} profilePicture={profilePicture} loggedInUserId={loggedInUserId} initialPost={post} />)}
+        </div>
+    </div>
     )
 }
 

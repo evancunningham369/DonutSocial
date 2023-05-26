@@ -19,33 +19,36 @@ function Register() {
 
     let result = buttonClicked === "register" ? await register(user) : await login(user);
     const response = await result.json();
-
+    
     if(result.ok){
       sessionStorage.setItem('userId', response.userId);
+      sessionStorage.setItem('username', response.username);
       navigate('/home');
     }
-    
+    document.getElementById('alert').style.visibility = 'visible';
     setServerResponse(response);
   }
 
   return (
-    <div className="page">
-      <div className='register-form'>
-        <h1 id='register-title'>Register/Log-In</h1>
-          <form className='register-field' action="" onSubmit={handleSubmit}>
-            <label id='username' htmlFor="username">Username: 
-              <input name='username' defaultValue='user1' type="text" />
-            </label>
-            <label id='password' htmlFor="password">Password: 
-              <input name='password' defaultValue='123' type="password" />
-            </label>
-            <div id="submit-buttons">
-              <button name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>
-              <button name='login' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Log-In</button>
-            </div>
-            <h2 id='register-response'>{serverResponse}</h2>
-          </form>
-      </div>
+    <div className="form-container">
+        <form className='text-center form-signin' onSubmit={handleSubmit}>
+          <h1 id='register-title' className='h3 m-3 fw-normal'>Register/Log-In</h1>
+          <div className='form-floating'>
+            <input className='form-control' id='floatingUsername' name='username'  defaultValue='user1' type="text" placeholder='username' />
+            <label className='floating-input' htmlFor="floatingUsername">Username</label>
+          </div>
+          <div className='form-floating'>
+            <input className='form-control' id='floatingPassword' name='password'  defaultValue='123' type="password" placeholder='password' />
+            <label className='floating-input' htmlFor="floatingPassword">Password</label>
+          </div>
+          <div id="submit-buttons">
+            <button className='btn btn-primary' name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>
+            <button className='btn btn-primary' name='login' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Log-In</button>
+          </div>
+          <div style={{visibility: 'hidden'}}id='alert' className='alert alert-danger' role='alert'>
+            {serverResponse}
+          </div>
+        </form>
     </div>
 
   )
