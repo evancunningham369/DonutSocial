@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import * as account_req from '../api/account.js';
 import * as post_req from '../api/post.js';
 import * as user_action from '../api/user.js';
@@ -9,6 +10,7 @@ function Profile(){
     let loggedInUserId = sessionStorage.getItem('userId');
     const location = useLocation();
     const { userId } = location.state;
+    
     const isOwnProfile = loggedInUserId == userId;
     const [profilePicture, setProfilePicture] = useState(location.state.profilePicture);
     const [followText, setFollowText] = useState('Follow');
@@ -101,11 +103,11 @@ function Profile(){
                 <img src={profilePicture} alt="Profile Picture" />
                 <div className="avatar-buttons">
                     {isOwnProfile ? <>
-                        <button onClick={() => {fileInputRef.current.click()}}>Upload Avatar</button>
+                        <Button variant='info' className="btn btn-primary" onClick={() => {fileInputRef.current.click()}}>Upload Avatar</Button>
                         <input onChange={handleImage} multiple={false} ref={fileInputRef} type="file" hidden />
-                        <button onClick={removeProfilePicture} type="button">Remove Avatar</button>
+                        <Button variant='danger' className="btn btn-primary" onClick={removeProfilePicture} type="button">Remove Avatar</Button>
                     </>: 
-                    <button onClick={handleFollow}>{followText}</button>
+                    <button className="btn btn-primary" onClick={handleFollow}>{followText}</button>
                     }
                 </div>
             </div>

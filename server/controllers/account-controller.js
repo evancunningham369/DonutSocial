@@ -15,10 +15,9 @@ export const register_account = async(req, res) => {
         const saltRounds = 5;
         var hashPass = await bcrypt.hash(password, saltRounds);
         const newAccount = await pool.query(
-            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING user_id',
+            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING *',
              [username, hashPass]
              );
-
         res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id, username: username});
     } catch (error) {
         error.constraint != undefined && res.status(400).json("User with that name already exists!");

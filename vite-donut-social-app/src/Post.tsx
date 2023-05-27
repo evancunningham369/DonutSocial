@@ -47,7 +47,7 @@ function Post(props){
     }
 
     const handleDelete = async() => {
-    
+        
     const response = await user_action.delete_post(postId);
     if(response.ok){
                 setDeleteConfirmation(false);
@@ -58,6 +58,7 @@ function Post(props){
     
     return (
         <div className='post'>
+            <hr className='solid'/>
             <div className="post-heading">
                 <div className="user-post-info">
                 <Link to='/profile' state={{userId: userIdPoster ,profilePicture: postProfilePic}}>
@@ -75,7 +76,6 @@ function Post(props){
                 
                 {postByCurrentUser && (<button className='trash' onClick={() => {setDeleteConfirmation(true); setTitle('Delete this post?')}}>{trash}</button>)}
             </div>
-
 
             <Modal show={showDeleteConfirmation} size='lg'>
                 <Modal.Header>
