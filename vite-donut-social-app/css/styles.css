@@ -61,15 +61,16 @@ main {
   .post-header{
       display: flex;
       margin: 1em;
-      justify-content: space-between;
     }
     .post-header .button-options{
-        align-self: flex-end;
+      margin: auto;
+      display: block;
     }
 
-    .post-header #create-post{
-        align-self: flex-end;
+    .button-options #create-post{
+      padding-top: 1em;
     }
+    
   .posts{
     display: flex;
     flex-flow: column wrap;

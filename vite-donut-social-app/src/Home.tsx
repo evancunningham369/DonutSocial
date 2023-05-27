@@ -67,7 +67,6 @@ function Home(){
     <div id='home'>
         <div className='post-header'>
             <div className="profile-info">
-                <h2>{loggedInUsername} logged in</h2>
                 <h3>
                     <Link className='text-decoration-none' to='/profile' state={{userId: loggedInUserId, profilePicture: profilePicture}}>View Profile</Link>
                 </h3>
@@ -78,12 +77,15 @@ function Home(){
                 <label className='btn btn-outline-primary' htmlFor='general'>General Feed</label>
                 <input id='following' className='btn-check' onClick={getPost} type="radio" name='options' autoComplete='off' />
                 <label className='btn btn-outline-primary' htmlFor='following'>Following</label>
+
+                <form id="create-post" onSubmit={createPost}>
+                    <input name='content' type="text" />
+                    <button type='submit'>Post</button>
+                </form>
             </div>
 
-            <form id="create-post" onSubmit={createPost}>
-                <input name='content' type="text" />
-                <button type='submit'>Post</button>
-            </form>
+            <h2>{loggedInUsername} logged in</h2>
+
         </div>
         <div className="posts">
             {posts.length == 0 ? 
