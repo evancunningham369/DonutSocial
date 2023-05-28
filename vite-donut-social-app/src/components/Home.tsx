@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Post from './Post.js';
-import * as post_req from '../api/post.js';
+import * as post_req from '../../api/post.js';
 import donut from '/src/donut.jpg';
-import { get_profile_picture } from '../api/account.js';
+import { get_profile_picture } from '../../api/account.js';
+import { PostType } from './Post.types.js';
 
 function Home(){
     let loggedInUserId = sessionStorage.getItem('userId');
     let loggedInUsername = sessionStorage.getItem('username');
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<PostType[]>([]);
     const [selection, setSelection] = useState("");
-    const [profilePicture, setProfilePicture] = useState();
+    const [profilePicture, setProfilePicture] = useState(donut);
     
     async function getProfilePicture(){
         try {
@@ -28,8 +29,8 @@ function Home(){
         post_req.get_all_posts().then((posts) => setPosts(posts));
     },[])
 
-    const createPost = async(e) => {
-        const { content } = e.target;
+    const createPost = async(event: React.FormEvent<HTMLFormElement>) => {
+        const { content } = event.currentTarget;
         
         const post = {
             content: content.value,
@@ -39,8 +40,8 @@ function Home(){
         await post_req.create_post(post);
     }
 
-    const getPost = async(e) => {
-        const { id } = e.target;
+    const getPost = async(event: React.MouseEvent<HTMLInputElement>) => {
+        const { id } = event.currentTarget;
         if(id == selection) return;
 
         let allPosts;
@@ -58,8 +59,8 @@ function Home(){
         setPosts(allPosts);
     }
 
-    const deletePost = (postId) => {
-        const newPosts = posts.filter(post => post.post_id !== postId);
+    const deletePost = (postId: number) => {
+        const newPosts: PostType[] = posts.filter(post => post.post_id !== postId);
         setPosts(newPosts);
     }
 
@@ -67,9 +68,10 @@ function Home(){
     <div id='home'>
         <div className='post-header'>
             <div className="profile-info">
-                <h3>
-                    <Link className='text-decoration-none' to='/profile' state={{userId: loggedInUserId, profilePicture: profilePicture}}>View Profile</Link>
-                </h3>
+                <Link className='text-decoration-none' to='/profile' state={{userId: loggedInUserId, profilePicture: profilePicture}}>
+                    <img style={{display: 'inline',width: '100px', height: '100px'}} src={profilePicture} alt="post profile picture" />
+                </Link>
+                    <h4>View Profile</h4>
             </div>
             
             <div className='btn-group button-options' role='group'>

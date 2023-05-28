@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { register, login } from '../api/account.js';
+import { register, login } from '../../api/account.js';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -7,10 +7,10 @@ function Register() {
   const [serverResponse, setServerResponse] = useState("");
   const navigate = useNavigate();
   
-  async function handleSubmit(e){
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>){
+    event.preventDefault();
 
-    const { username, password } = e.target;
+    const { username , password } = event.currentTarget;
 
     let user = {
       username: username.value,
@@ -25,7 +25,7 @@ function Register() {
       sessionStorage.setItem('username', response.username);
       navigate('/home');
     }
-    document.getElementById('alert').style.visibility = 'visible';
+    document.getElementById('alert')!!.style.visibility = 'visible';
     setServerResponse(response);
   }
 
@@ -42,8 +42,8 @@ function Register() {
             <label className='floating-input' htmlFor="floatingPassword">Password</label>
           </div>
           <div id="submit-buttons">
-            <button className='btn btn-primary' name='register' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Register</button>
-            <button className='btn btn-primary' name='login' type='submit' onClick={(e) => setButtonClicked(e.target.name)}>Log-In</button>
+            <button className='btn btn-primary' name='register' type='submit' onClick={(e: React.MouseEvent<HTMLButtonElement>) => setButtonClicked(e.currentTarget.name)}>Register</button>
+            <button className='btn btn-primary' name='login' type='submit' onClick={(e: React.MouseEvent<HTMLButtonElement>) => setButtonClicked(e.currentTarget.name)}>Log-In</button>
           </div>
           <div style={{visibility: 'hidden'}}id='alert' className='alert alert-danger' role='alert'>
             {serverResponse}

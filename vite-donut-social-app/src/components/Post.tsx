@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
-import * as user_action from '../api/user.js';
-import * as post_req from '../api/post.js';
-import { get_profile_picture } from '../api/account.js';
-import donut from './donut.jpg';
+import * as user_action from '../../api/user.ts';
+import * as post_req from '../../api/post.ts';
+import { get_profile_picture } from '../../api/account.ts';
+import donut from '../donut.jpg';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { like, unlike, trash } from './icons.tsx'
+import { PostProps } from './Post.types.ts';
 
-function Post(props){
-    const { loggedInUserId, userIdPoster , initialPost, deletePost } = props;
+function Post({ loggedInUserId, userIdPoster , initialPost, deletePost }: PostProps){
+
     const { post_id: postId, content, post_datetime } = initialPost;
-
   
     const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike);
     
     const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
-    const [title, setTitle] = useState();
+    const [title, setTitle] = useState<string>();
     const [postProfilePic, setPostProfilePicture] = useState();
     const postByCurrentUser = loggedInUserId == userIdPoster;
     
@@ -43,7 +43,7 @@ function Post(props){
         setLikeBtn(likeText == "Like" ? like: unlike);
         setLikedText(likeText == "Like" ? "Unlike" : "Like");
         
-        const response = likeText == "Like" ?  await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
+        likeText == "Like" ?  await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
     }
 
     const handleDelete = async() => {
@@ -61,9 +61,11 @@ function Post(props){
             <hr className='solid'/>
             <div className="post-heading">
                 <div className="user-post-info">
-                <Link to='/profile' state={{userId: userIdPoster ,profilePicture: postProfilePic}}>
-                    <img style={{display: 'inline',width: '25px', height: '25px'}} src={postProfilePic} alt="post profile picture" />
-                </Link>
+                <div className="profile-picture">
+                    <Link to='/profile' state={{userId: userIdPoster ,profilePicture: postProfilePic}}>
+                        <img src={postProfilePic} alt="post profile picture" />
+                    </Link>
+                </div>
                 <h4 style={{display: 'inline'}}>User {userIdPoster}</h4>
                 </div>
                 <p className='post-datetime'>Posted on: {post_datetime}</p>

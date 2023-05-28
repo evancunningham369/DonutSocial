@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import * as account_req from '../api/account.js';
-import * as post_req from '../api/post.js';
-import * as user_action from '../api/user.js';
+import * as account_req from '../../api/account.js';
+import * as post_req from '../../api/post.js';
+import * as user_action from '../../api/user.js';
 import { useLocation } from "react-router-dom";
 import Post from "./Post.js";
+import { PostType } from "./Post.types.js";
 
 function Profile(){
     let loggedInUserId = sessionStorage.getItem('userId');
@@ -14,10 +15,10 @@ function Profile(){
     const isOwnProfile = loggedInUserId == userId;
     const [profilePicture, setProfilePicture] = useState(location.state.profilePicture);
     const [followText, setFollowText] = useState('Follow');
-    const fileInputRef = useRef();
-    const [following, setFollowing] = useState();
-    const [followers, setFollowers] = useState();
-    const [posts, setPosts] = useState([]);
+    const fileInputRef = useRef<HTMLInputElement>(null!);
+    const [following, setFollowing] = useState(0);
+    const [followers, setFollowers] = useState(0);
+    const [posts, setPosts] = useState<PostType[]>([]);
     const [selection, setSelection] = useState("");
 
     const userFollowingProfile = async() => {
@@ -42,8 +43,8 @@ function Profile(){
         userFollowingProfile();
     }, [])
 
-    const getPost = async(e) => {
-        const { id } = e.target;
+    const getPost = async(event: React.MouseEvent<HTMLInputElement>) => {
+        const { id } = event.currentTarget;
         if(id == selection) return;
 
         let allPosts;
@@ -63,12 +64,10 @@ function Profile(){
 
     
     const handleImage = async() => {
-        const file = fileInputRef.current.files[0];
-        
-        setFileToBase(file);
+        if(fileInputRef.current.files) setFileToBase(fileInputRef.current.files[0]);
     }
 
-    const setFileToBase = (file) => {
+    const setFileToBase = (file: Blob) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
@@ -78,9 +77,9 @@ function Profile(){
         }
     }
     
-    const uploadProfilePicture = async(profileImage) => {
+    const uploadProfilePicture = async(profileImage: string | ArrayBuffer | null) => {
         let data = {image: profileImage, userId: loggedInUserId}
-        const response = await account_req.upload_profile_picture(data);
+        await account_req.upload_profile_picture(data);
     }
 
     const removeProfilePicture = async() => {
@@ -94,6 +93,11 @@ function Profile(){
         if(response.ok){
             setFollowText(followText == "Follow" ? "Unfollow" : "Follow");
         }
+    }
+
+    const deletePost = (postId: number) => {
+        const newPosts: PostType[] = posts.filter(post => post.post_id !== postId);
+        setPosts(newPosts);
     }
 
     return (
@@ -123,7 +127,7 @@ function Profile(){
             </div>
             <div className="user-posts">
             {posts.length == 0 ? <h1>No {selection} posts</h1> : posts.map((post) =>
-                    <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} loggedInUserId={loggedInUserId} initialPost={post}  />)}
+                    <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} deletePost={deletePost} loggedInUserId={loggedInUserId} initialPost={post}  />)}
             </div>
         </div>
     )
