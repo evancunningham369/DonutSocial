@@ -4,8 +4,7 @@ import * as account_req from '../../api/account.js';
 import * as post_req from '../../api/post.js';
 import * as user_action from '../../api/user.js';
 import { useLocation } from "react-router-dom";
-import Post from "./Post.js";
-import { PostType } from "./Post.types.js";
+import Post from "./Post.jsx";
 
 function Profile(){
     let loggedInUserId = sessionStorage.getItem('userId');
@@ -15,10 +14,10 @@ function Profile(){
     const isOwnProfile = loggedInUserId == userId;
     const [profilePicture, setProfilePicture] = useState(location.state.profilePicture);
     const [followText, setFollowText] = useState('Follow');
-    const fileInputRef = useRef<HTMLInputElement>(null!);
+    const fileInputRef = useRef(null);
     const [following, setFollowing] = useState(0);
     const [followers, setFollowers] = useState(0);
-    const [posts, setPosts] = useState<PostType[]>([]);
+    const [posts, setPosts] = useState([]);
     const [selection, setSelection] = useState("");
 
     const userFollowingProfile = async() => {
@@ -43,7 +42,7 @@ function Profile(){
         userFollowingProfile();
     }, [])
 
-    const getPost = async(event: React.MouseEvent<HTMLInputElement>) => {
+    const getPost = async(event) => {
         const { id } = event.currentTarget;
         if(id == selection) return;
 
@@ -67,7 +66,7 @@ function Profile(){
         if(fileInputRef.current.files) setFileToBase(fileInputRef.current.files[0]);
     }
 
-    const setFileToBase = (file: Blob) => {
+    const setFileToBase = (file) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
@@ -77,7 +76,7 @@ function Profile(){
         }
     }
     
-    const uploadProfilePicture = async(profileImage: string | ArrayBuffer | null) => {
+    const uploadProfilePicture = async(profileImage) => {
         let data = {image: profileImage, userId: loggedInUserId}
         await account_req.upload_profile_picture(data);
     }
@@ -95,8 +94,8 @@ function Profile(){
         }
     }
 
-    const deletePost = (postId: number) => {
-        const newPosts: PostType[] = posts.filter(post => post.post_id !== postId);
+    const deletePost = (postId) => {
+        const newPosts = posts.filter(post => post.post_id !== postId);
         setPosts(newPosts);
     }
 

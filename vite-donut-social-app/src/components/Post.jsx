@@ -1,72 +1,70 @@
 import { useState, useEffect } from 'react';
-import * as user_action from '../../api/user.ts';
-import * as post_req from '../../api/post.ts';
-import { get_profile_picture } from '../../api/account.ts';
-import donut from '../donut.jpg';
+import * as user_action from '../../api/user.js';
+import * as post_req from '../../api/post.js';
+import { get_profile_picture } from '../../api/account.js';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
-import { like, unlike, trash } from './icons.tsx'
-import { PostProps } from './Post.types.ts';
+import { like, unlike, trash } from './icons.jsx'
 
-function Post({ loggedInUserId, userIdPoster , initialPost, deletePost }: PostProps){
+function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
 
     const { post_id: postId, content, post_datetime } = initialPost;
-  
+
     const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike);
-    
+
     const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
-    const [title, setTitle] = useState<string>();
+    const [title, setTitle] = useState();
     const [postProfilePic, setPostProfilePicture] = useState();
     const postByCurrentUser = loggedInUserId == userIdPoster;
-    
+
     useEffect(() => {
         get_profile_picture(userIdPoster).then(profilePic => {
-            setPostProfilePicture(profilePic ? profilePic : donut);
+            setPostProfilePicture(profilePic ? profilePic : '/src/public/donut.jpg');
         });
-        async function setInitialText(){
+        async function setInitialText() {
             try {
                 const data = await post_req.get_liked_posts_by_id(loggedInUserId);
-                if(data.liked_posts == null) return;
+                if (data.liked_posts == null) return;
                 const isPostLiked = data.liked_posts.includes(postId);
-                setLikeBtn(isPostLiked ? like: unlike);
-                setLikedText(isPostLiked ? "Unlike": "Like");
+                setLikeBtn(isPostLiked ? like : unlike);
+                setLikedText(isPostLiked ? "Unlike" : "Like");
             } catch (error) {
                 return;
             }
         }
         setInitialText();
     }, [])
-    
-    
-    const handleLike = async() => {
-        setLikeBtn(likeText == "Like" ? like: unlike);
+
+
+    const handleLike = async () => {
+        setLikeBtn(likeText == "Like" ? like : unlike);
         setLikedText(likeText == "Like" ? "Unlike" : "Like");
-        
-        likeText == "Like" ?  await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
+
+        likeText == "Like" ? await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
     }
 
-    const handleDelete = async() => {
-        
-    const response = await user_action.delete_post(postId);
-    if(response.ok){
-                setDeleteConfirmation(false);
-                setTitle('Post deleted');
-                deletePost(postId);
-            }
+    const handleDelete = async () => {
+
+        const response = await user_action.delete_post(postId);
+        if (response.ok) {
+            setDeleteConfirmation(false);
+            setTitle('Post deleted');
+            deletePost(postId);
+        }
     }
-    
+
     return (
         <div className='post'>
-            <hr className='solid'/>
+            <hr className='solid' />
             <div className="post-heading">
                 <div className="user-post-info">
-                <div className="profile-picture">
-                    <Link to='/profile' state={{userId: userIdPoster ,profilePicture: postProfilePic}}>
-                        <img src={postProfilePic} alt="post profile picture" />
-                    </Link>
-                </div>
-                <h4 style={{display: 'inline'}}>User {userIdPoster}</h4>
+                    <div className="profile-picture">
+                        <Link to='/profile' state={{ userId: userIdPoster, profilePicture: postProfilePic }}>
+                            <img src={postProfilePic} alt="post profile picture" />
+                        </Link>
+                    </div>
+                    <h4 style={{ display: 'inline' }}>User {userIdPoster}</h4>
                 </div>
                 <p className='post-datetime'>Posted on: {post_datetime}</p>
             </div>
@@ -75,8 +73,8 @@ function Post({ loggedInUserId, userIdPoster , initialPost, deletePost }: PostPr
             </div>
             <div className="post-action-btn-group">
                 <button className='like-btn' onClick={handleLike}>{likeBtn}</button>
-                
-                {postByCurrentUser && (<button className='trash' onClick={() => {setDeleteConfirmation(true); setTitle('Delete this post?')}}>{trash}</button>)}
+
+                {postByCurrentUser && (<button className='trash' onClick={() => { setDeleteConfirmation(true); setTitle('Delete this post?') }}>{trash}</button>)}
             </div>
 
             <Modal show={showDeleteConfirmation} size='lg'>
@@ -87,14 +85,14 @@ function Post({ loggedInUserId, userIdPoster , initialPost, deletePost }: PostPr
                     <div className='post'>
                         <div className="post-heading">
                             <div className="user-post-info">
-                                <img style={{display: 'inline',width: '25px', height: '25px'}} src={postProfilePic} alt="post profile picture" />
-                                <h4 style={{display: 'inline'}}>User {userIdPoster}</h4>
+                                <img style={{ display: 'inline', width: '25px', height: '25px' }} src={postProfilePic} alt="post profile picture" />
+                                <h4 style={{ display: 'inline' }}>User {userIdPoster}</h4>
                             </div>
                             <p className='post-datetime'>Posted on: {post_datetime}</p>
                         </div>
                         <div className="content">
                             <p>{content}</p>
-                            </div>
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

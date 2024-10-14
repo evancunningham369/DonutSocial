@@ -1,0 +1,16 @@
+services:
+  web:
+    build: ./vite-donut-social-app
+    environment:
+      REACT_APP_BASE_URL: ${REACT_APP_BASE_URL}
+    ports:
+      - 3000:5173
+  api:
+    build: ./server
+    environment:
+      psqlPass: ${psqlPass}
+      cloud_name: ${cloud_name}
+      api_key: ${api_key}
+      api_secret: ${api_secret}
+    ports:
+      - 3001:3001

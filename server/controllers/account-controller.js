@@ -40,6 +40,7 @@ export const login_account = async(req, res) => {
         }
         res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id, username: user.username});
     } catch (error) {
+        console.log(error);
         res.status(400).json(error.message);
     }
 }
