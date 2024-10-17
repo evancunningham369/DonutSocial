@@ -1,67 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Post from './Post.jsx';
-import * as post_req from '../../api/post.js';
-import donut from '/src/public/donut.jpg';
-import { get_profile_picture } from '../../api/account.js';
+import useProfilePicture from './useProfilePicture.jsx';
+import usePosts from './usePosts.jsx';
 
 function Home() {
     let loggedInUserId = sessionStorage.getItem('userId');
     let loggedInUsername = sessionStorage.getItem('username');
-    const [posts, setPosts] = useState([]);
+    
     const [selection, setSelection] = useState("");
-    const [profilePicture, setProfilePicture] = useState(donut);
 
-    async function getProfilePicture() {
-        try {
-            const url = await get_profile_picture(loggedInUserId);
-            if (url == null) throw TypeError
-
-            setProfilePicture(url);
-        } catch (error) {
-            setProfilePicture(donut);
-        }
-    }
-    getProfilePicture();
-
-    useEffect(() => {
-        post_req.get_all_posts().then((posts) => setPosts(posts));
-    }, [])
-
-    const createPost = async (event) => {
-        const { content } = event.currentTarget;
-
-        const post = {
-            content: content.value,
-            userId: loggedInUserId
-        }
-
-        await post_req.create_post(post);
-    }
-
-    const getPost = async (event) => {
-        const { id } = event.currentTarget;
-        if (id == selection) return;
-
-        let allPosts;
-        switch (id) {
-            case 'general':
-                allPosts = await post_req.get_all_posts();
-                setSelection('general');
-                break;
-            case 'following':
-                allPosts = await post_req.get_following_posts(loggedInUserId);
-                setSelection('following');
-                break;
-        }
-
-        setPosts(allPosts);
-    }
-
-    const deletePost = (postId) => {
-        const newPosts = posts.filter(post => post.post_id !== postId);
-        setPosts(newPosts);
-    }
+    const { profilePicture } = useProfilePicture();
+    const { posts, createPost, getPost, deletePost } = usePosts();
+    
+    
 
     return (
         <div id='home'>

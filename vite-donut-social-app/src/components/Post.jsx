@@ -4,14 +4,14 @@ import * as post_req from '../../api/post.js';
 import { get_profile_picture } from '../../api/account.js';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
-import { like, unlike, trash } from './icons.jsx'
+import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
 
 function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
 
     const { post_id: postId, content, post_datetime } = initialPost;
 
     const [likeText, setLikedText] = useState("Like");
-    const [likeBtn, setLikeBtn] = useState(unlike);
+    const [likeBtn, setLikeBtn] = useState(unlike_icon);
 
     const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
     const [title, setTitle] = useState();
@@ -27,7 +27,7 @@ function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
                 const data = await post_req.get_liked_posts_by_id(loggedInUserId);
                 if (data.liked_posts == null) return;
                 const isPostLiked = data.liked_posts.includes(postId);
-                setLikeBtn(isPostLiked ? like : unlike);
+                setLikeBtn(isPostLiked ? like_icon : unlike_icon);
                 setLikedText(isPostLiked ? "Unlike" : "Like");
             } catch (error) {
                 return;
@@ -38,7 +38,7 @@ function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
 
 
     const handleLike = async () => {
-        setLikeBtn(likeText == "Like" ? like : unlike);
+        setLikeBtn(likeText == "Like" ? like_icon : unlike_icon);
         setLikedText(likeText == "Like" ? "Unlike" : "Like");
 
         likeText == "Like" ? await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
@@ -74,7 +74,7 @@ function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
             <div className="post-action-btn-group">
                 <button className='like-btn' onClick={handleLike}>{likeBtn}</button>
 
-                {postByCurrentUser && (<button className='trash' onClick={() => { setDeleteConfirmation(true); setTitle('Delete this post?') }}>{trash}</button>)}
+                {postByCurrentUser && (<button className='trash' onClick={() => { setDeleteConfirmation(true); setTitle('Delete this post?') }}>{trash_icon}</button>)}
             </div>
 
             <Modal show={showDeleteConfirmation} size='lg'>
