@@ -1,49 +1,8 @@
-import bcrypt from 'bcrypt';
-import { pool } from "../config/config.js";
+import { pool } from "../config/database.js";
 
 /**
- * File for API handlers for user accounts
+ * API handlers for user accounts
  */
-
-// Register account in database
-export const register_account = async(req, res) => {
-    try {
-        const { username, password } = req.body;
-        if(!username || !password){
-            res.status(400).json('Username or password fields cannot be empty');
-        }
-        const saltRounds = 5;
-        var hashPass = await bcrypt.hash(password, saltRounds);
-        const newAccount = await pool.query(
-            'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING *',
-             [username, hashPass]
-             );
-        res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id, username: username});
-    } catch (error) {
-        error.constraint != undefined && res.status(400).json("User with that name already exists!");
-    }
-}
-
-// Login and verify account in database
-export const login_account = async(req, res) => {
-    try {
-        const { username, password } = req.body;
-        const result = await pool.query('SELECT * FROM account WHERE username= $1', [username]);
-        if(result.rowCount == 0){
-            throw new Error("Incorrect username!")
-        }
-        const user = result.rows[0];
-
-        const match = await bcrypt.compare(password, user.hashpass);
-        if(!match){
-            throw new Error("Incorrect password!");
-        }
-        res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id, username: user.username});
-    } catch (error) {
-        console.log(error);
-        res.status(400).json(error.message);
-    }
-}
 
 // Get account in database
 export const get_account = async(req, res) => {
