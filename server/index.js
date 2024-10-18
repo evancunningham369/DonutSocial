@@ -1,7 +1,10 @@
 import express from 'express';
 const app = express();
 import cors from 'cors';
+import passport from './config/passport.js';
+import session from 'express-session';
 
+import * as authentication_controller from './controllers/authentication-controller.js'
 import * as account_controller from './controllers/account-controller.js';
 import * as user_controller from './controllers/user-controller.js';
 import * as post_controller from './controllers/post-controller.js';
@@ -9,16 +12,32 @@ import * as post_controller from './controllers/post-controller.js';
 //middleware
 app.use(cors());
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 //ROUTES//
 
 //ACCOUNT ACTION ROUTES//
 
 //create an account
-app.post('/register', account_controller.register_account);
+app.post('/register', authentication_controller.register_account);
+
+//register a google account
+app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+
+//google authentication callback
+app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/' }),
+    authentication_controller.callback_google_account);
 
 //login an account
-app.post('/login', account_controller.login_account);
+app.post('/login', authentication_controller.login_account);
 
 //get an account
 app.get('/:userId', account_controller.get_account);
