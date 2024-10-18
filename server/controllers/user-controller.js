@@ -1,4 +1,4 @@
-import { pool } from "../config/config.js";
+import { pool } from "../config/database.js";
 /**
  * File to hold API requests for user actions
  */
