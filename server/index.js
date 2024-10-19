@@ -1,6 +1,6 @@
+import cors from 'cors';
 import express from 'express';
 const app = express();
-import cors from 'cors';
 import passport from './config/passport.js';
 import session from 'express-session';
 
@@ -16,7 +16,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true }
+    cookie: { secure: false }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { register, login } from '../../api/account.js';
+import { register, login, google_login } from '../../api/account.js';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -11,7 +11,7 @@ function Register() {
     event.preventDefault();
 
     const { username , password } = event.currentTarget;
-    console.log(username);
+
     let user = {
       username: username.value,
       password: password.value
@@ -29,6 +29,16 @@ function Register() {
     setServerResponse(response);
   }
 
+  async function handleGoogleSignIn(){
+    try {
+      let data = await google_login();
+      console.log(data.user);
+      navigate('/home');
+    } catch (error) {
+      serverResponse(error);
+    }
+  }
+
   return (
     <div className="form-container">
         <form className='text-center form-signin' onSubmit={handleSubmit}>
@@ -44,6 +54,7 @@ function Register() {
           <div id="submit-buttons">
             <button className='btn btn-primary' name='register' type='submit' onClick={(e) => setButtonClicked(e.currentTarget.name)}>Register</button>
             <button className='btn btn-primary' name='login' type='submit' onClick={(e) => setButtonClicked(e.currentTarget.name)}>Log-In</button>
+            <button className='btn btn-primary' name='google-login' type='button' onClick={handleGoogleSignIn}>Google Log-In</button>
           </div>
           <div style={{visibility: 'hidden'}}id='alert' className='alert alert-danger' role='alert'>
             {serverResponse}

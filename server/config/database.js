@@ -39,7 +39,7 @@ const createDatabaseAndTables = async () => {
                 user_id SERIAL PRIMARY KEY,
                 username VARCHAR(15) UNIQUE,
                 hashPass VARCHAR(60),
-                googleId VARCHAR(60) UNIQUE,
+                google_id VARCHAR(60) UNIQUE,
                 followed_users integer[],
                 profile_picture bytea
         );
@@ -65,4 +65,4 @@ const createDatabaseAndTables = async () => {
     }
 }
 
-createDatabaseAndTables();
+//createDatabaseAndTables();

@@ -18,6 +18,10 @@ export const login = async(user) => {
     return serverResponse;
 }
 
+export const google_login = async() => {
+  window.location.href = `${BASE_URL}/auth/google`;
+}
+
 export const upload_profile_picture = async(data) => {
   let serverResponse = await fetch (`${BASE_URL}/upload-profile-picture`, {
     method: "POST",
