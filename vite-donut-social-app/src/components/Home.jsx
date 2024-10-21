@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Post from './Post.jsx';
+import Logout from './useLogout.jsx';
 import useProfilePicture from './useProfilePicture.jsx';
 import usePosts from './usePosts.jsx';
 
@@ -12,12 +13,11 @@ function Home() {
 
     const { profilePicture } = useProfilePicture();
     const { posts, createPost, getPost, deletePost } = usePosts();
-    
-    
 
     return (
         <div id='home'>
             <div className='post-header'>
+                <Logout />
                 <div className="profile-info">
                     <Link className='text-decoration-none' to='/profile' state={{ userId: loggedInUserId, profilePicture: profilePicture }}>
                         <img style={{ display: 'inline', width: '100px', height: '100px' }} src={profilePicture} alt="post profile picture" />
