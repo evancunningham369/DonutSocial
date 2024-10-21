@@ -1,12 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { register, login, google_login } from '../../api/account.js';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [buttonClicked, setButtonClicked] = useState("");
   const [serverResponse, setServerResponse] = useState("");
+  const [isAlertVisible, setAlertVisible] = useState(false);
   const navigate = useNavigate();
   
+  useEffect(() => {
+    if(serverResponse) {
+      setAlertVisible(true);
+      const timer = setTimeout(() => {
+        setServerResponse("");
+        setAlertVisible(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  },[serverResponse]);
+
   async function handleSubmit(event){
     event.preventDefault();
 
@@ -17,23 +30,13 @@ function Register() {
       password: password.value
     }
 
-    let result = buttonClicked === "register" ? await register(user) : await login(user);
-    const response = await result.json();
-    
-    if(result.ok){
-      sessionStorage.setItem('userId', response.userId);
-      sessionStorage.setItem('username', response.username);
-      navigate('/home');
-    }
-    document.getElementById('alert').style.visibility = 'visible';
-    setServerResponse(response);
+    let response = buttonClicked === "register" ? await register(user) : await login(user);
+    setServerResponse(await response.json())
   }
 
   async function handleGoogleSignIn(){
     try {
       let data = await google_login();
-      console.log(data.user);
-      navigate('/home');
     } catch (error) {
       serverResponse(error);
     }
@@ -56,7 +59,7 @@ function Register() {
             <button className='btn btn-primary' name='login' type='submit' onClick={(e) => setButtonClicked(e.currentTarget.name)}>Log-In</button>
             <button className='btn btn-primary' name='google-login' type='button' onClick={handleGoogleSignIn}>Google Log-In</button>
           </div>
-          <div style={{visibility: 'hidden'}}id='alert' className='alert alert-danger' role='alert'>
+          <div style={{visibility: isAlertVisible ? 'visible': 'hidden'}}id='alert' className='alert alert-danger' role='alert'>
             {serverResponse}
           </div>
         </form>
