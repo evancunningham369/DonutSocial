@@ -6,7 +6,11 @@ export const register = async(user) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(user)
     });
-    return serverResponse;
+    console.log(serverResponse);
+    if(serverResponse.redirected){
+      window.location.href = serverResponse.url;
+    }
+    else return serverResponse;
 }
 
 export const login = async(user) => {
@@ -15,7 +19,19 @@ export const login = async(user) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(user)
     });
-    return serverResponse;
+    if(serverResponse.redirected){
+      window.location.href = serverResponse.url;
+    }
+    else return serverResponse;
+}
+
+export const logout = async() => {
+    let serverResponse = await fetch(`${BASE_URL}/logout`);
+    if(serverResponse.redirected){
+      window.location.href = serverResponse.url;
+    }
+    else return serverResponse;
+    
 }
 
 export const google_login = async() => {
