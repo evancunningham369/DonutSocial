@@ -11,16 +11,15 @@ const googleStrategyConfig = {
 };
 
 passport.use(new GoogleStrategy(googleStrategyConfig, google_strategy));
-passport.use(new LocalStrategy({authorizationURL: 'http://localhost:5713/home'}, login_account));
+passport.use(new LocalStrategy({usernameField: 'username', passwordField: 'password'}, login_account));
 
 passport.serializeUser((user, done) => {
     done(null, user.user_id);
   });
   
-passport.deserializeUser(async (userId, done) => {
+passport.deserializeUser(async (user, done) => {
 try {
-    const result = await pool.query('SELECT * FROM account WHERE user_id = $1', [userId]);
-    done(null, result.rows[0]);
+    done(null, user.userId);
 } catch (err) {
     done(err);
 }
