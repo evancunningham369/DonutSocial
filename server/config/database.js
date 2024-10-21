@@ -8,23 +8,25 @@ import fs from 'fs';
 const { Pool } = pg;
 
 // Local Postgres configuration
-// export const pool = new Pool({
-//     user: 'postgres',
-//     password: process.env.psqlPass,
-//     host:'localhost',
-//     port: 5432,
-//     database: 'socialdb'
-// });
+export const pool = new Pool({
+    user: 'postgres',
+    password: 'pass',
+    host:'localhost',
+    port: 5432,
+    database: 'socialdb'
+});
 
-export const pool = new Pool({host:process.env.psqlHost,
-     user:process.env.psqlUser, 
-     password:process.env.psqlPass, 
-     database:process.env.psqlDatabase, 
-     port:5432, 
-     ssl:{
-        rejectUnauthorized: false,
-        ca:fs.readFileSync(process.env.psqlCertPath).toString()}
-    });
+//Azure Postgres configuration
+//
+// export const pool = new Pool({host:process.env.psqlHost,
+//      user:process.env.psqlUser, 
+//      password:process.env.psqlPass, 
+//      database:process.env.psqlDatabase, 
+//      port:5432, 
+//      ssl:{
+//         rejectUnauthorized: false,
+//         ca:fs.readFileSync(process.env.psqlCertPath).toString()}
+//     });
 
 console.log('Database connection successful');
 
@@ -65,4 +67,4 @@ const createDatabaseAndTables = async () => {
     }
 }
 
-//createDatabaseAndTables();
+createDatabaseAndTables();
