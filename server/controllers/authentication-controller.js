@@ -16,34 +16,32 @@ export const register_account = async(req, res) => {
             'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING *',
              [username, hashPass]
              );
-        return res.status(200).json({message: `User ${newAccount.rows[0].user_id} has successfully registered`, userId: newAccount.rows[0].user_id, username: username});
+        return res.redirect('http://localhost:5173/home');
     } catch (error) {
         if(error.constraint){
             return res.status(400).json("User with that name already exists!");
         }
-        return res.status(500).json('An unexpected error occured');
+        return res.status(500).json('An unexpected error occured:');
     }
 }
 
 // Register or Login google account
 export const google_strategy = async(accessToken, refreshToken, profile, done) => {
-    // try {
-    //     let user = await pool.query('SELECT * FROM account WHERE googleId = $1', [profile.id]);
-    //     if (!user.rows.length) {
-    //       await pool.query(
-    //         'INSERT INTO account (googleId, username) VALUES ($1, $2)',
-    //         [profile.id, profile.displayName]
-    //       );
-    //       user = await pool.query('SELECT * FROM account WHERE googleId = $1', [profile.id]);
-    //     }
-    //     user = user.rows[0];
-    //     user.accessToken = accessToken;
-    //     return done(null, user);
-    //   } catch (err) {
-    //     return done(err);
-    //   }
-    const user = { userId: user.userId, username: profile.displayName }
-    return done(null, user);
+    try {
+        let user = await pool.query('SELECT * FROM account WHERE google_id = $1', [profile.id]);
+        if (!user.rows.length) {
+          await pool.query(
+            'INSERT INTO account (google_id, username) VALUES ($1, $2)',
+            [profile.id, profile.displayName]
+          );
+          user = await pool.query('SELECT * FROM account WHERE google_id = $1', [profile.id]);
+        }
+        user = user.rows[0];
+        user.accessToken = accessToken;
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
 }
 
 // callback for google register/login
@@ -67,8 +65,24 @@ export const login_account = async(username, password, done) => {
         if(!match){
             return done(null, false, {message: "Incorrect password!"})
         }
-        res.status(200).json({message: `User ${user.user_id} has successfully logged in`, userId: user.user_id, username: user.username});
+        return done(null, user);
     } catch (error) {
-        res.status(400).json(error.message);
+        return done(error);
     }
+}
+
+export const login_callback = async(req, res) => {
+    if(req.user){
+        return res.redirect('http://localhost:5173/home');
+    }
+    return res.redirect('http://localhost:5173/register');
+}
+
+export const logout = async(req, res) => {
+        req.logout(err => {
+            if(err) return res.status(500).json({ message : 'Logout failed' });
+    
+            req.session.destroy();
+            return res.redirect('http://localhost:5173/register');
+        });
 }
