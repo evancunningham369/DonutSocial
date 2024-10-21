@@ -37,7 +37,10 @@ app.get('/auth/google/callback',
     authentication_controller.callback_google_account);
 
 //login an account
-app.post('/login', authentication_controller.login_account);
+app.post('/login', passport.authenticate('local'), authentication_controller.login_callback);
+
+//logout an account
+app.get('/logout', authentication_controller.logout);
 
 //get an account
 app.get('/:userId', account_controller.get_account);
