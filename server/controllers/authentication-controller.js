@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { pool } from '../config/database.js';
+import passport from '../config/passport.js';
 
 //API Handlers for authentication
 
@@ -29,12 +30,12 @@ export const register_account = async(req, res) => {
 export const google_strategy = async(accessToken, refreshToken, profile, done) => {
     try {
         let user = await pool.query('SELECT * FROM account WHERE google_id = $1', [profile.id]);
+
         if (!user.rows.length) {
-          await pool.query(
-            'INSERT INTO account (google_id, username) VALUES ($1, $2)',
+          user = await pool.query(
+            'INSERT INTO account (google_id, username) VALUES ($1, $2) RETURNING *',
             [profile.id, profile.displayName]
           );
-          user = await pool.query('SELECT * FROM account WHERE google_id = $1', [profile.id]);
         }
         user = user.rows[0];
         user.accessToken = accessToken;
@@ -47,12 +48,12 @@ export const google_strategy = async(accessToken, refreshToken, profile, done) =
 // callback for google register/login
 export const callback_google_account = async(req, res) => {
     if(!req.user){
-        return res.redirect('/');
+        return res.redirect('http://localhost:5173');
     }
     return res.redirect('http://localhost:5173/home');
 }
 
-// Login and verify account in database
+// Verify account in database
 export const login_account = async(username, password, done) => {
     try {
         const result = await pool.query('SELECT * FROM account WHERE username= $1', [username]);
@@ -71,11 +72,24 @@ export const login_account = async(username, password, done) => {
     }
 }
 
-export const login_callback = async(req, res) => {
-    if(req.user){
-        return res.redirect('http://localhost:5173/home');
-    }
-    return res.redirect('http://localhost:5173/register');
+export const handleAuthentication = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if(err){
+            return res.status(500).json({ message: info.message });
+        }
+
+        if(!user){
+            return res.status(401).json({ message: info.message })
+        }
+
+        req.logIn(user, (err) => {
+            if(err){
+                return res.status(500).json({message: 'Failed to log in user.' });
+            }
+            return res.status(200).redirect('http://localhost:5173/home');
+        });
+
+    })(req, res, next);
 }
 
 export const logout = async(req, res) => {
@@ -83,6 +97,6 @@ export const logout = async(req, res) => {
             if(err) return res.status(500).json({ message : 'Logout failed' });
     
             req.session.destroy();
-            return res.redirect('http://localhost:5173/register');
+            return res.redirect('http://localhost:5173');
         });
 }
