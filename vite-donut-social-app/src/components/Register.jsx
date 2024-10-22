@@ -31,7 +31,9 @@ function Register() {
     }
 
     let response = buttonClicked === "register" ? await register(user) : await login(user);
-    setServerResponse(await response.json())
+    
+    let data = await response.json();
+    setServerResponse(data.message);
   }
 
   async function handleGoogleSignIn(){
