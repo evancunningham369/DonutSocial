@@ -19,7 +19,16 @@ app.use(session({
     cookie: { secure: false }
 }));
 app.use(passport.initialize());
+
 app.use(passport.session());
+
+//ensure incoming request is authenticated
+const ensureAuthWithRedirect = (redirectURL) => (req, res, next) => {
+    if(!req.isAuthenticated()){
+        return next();
+    }
+    res.redirect(redirectURL);
+}
 
 //ROUTES//
 
@@ -29,7 +38,7 @@ app.use(passport.session());
 app.post('/register', authentication_controller.register_account);
 
 //register a google account
-app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+app.get('/auth/google', ensureAuthWithRedirect('http://localhost:5173/home') ,passport.authenticate('google', {scope: ['profile', 'email']}));
 
 //google authentication callback
 app.get('/auth/google/callback', 
@@ -37,7 +46,7 @@ app.get('/auth/google/callback',
     authentication_controller.callback_google_account);
 
 //login an account
-app.post('/login', passport.authenticate('local'), authentication_controller.login_callback);
+app.post('/login' , authentication_controller.handleAuthentication);
 
 //logout an account
 app.get('/logout', authentication_controller.logout);
