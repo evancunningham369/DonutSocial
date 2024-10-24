@@ -31,14 +31,23 @@ function Register() {
     }
 
     let response = buttonClicked === "register" ? await register(user) : await login(user);
-    
     let data = await response.json();
-    setServerResponse(data.message);
+
+    if(!response.ok){
+      setServerResponse(data.message);
+    }
+    else{
+      
+      sessionStorage.setItem("userId", data.userId);
+      sessionStorage.setItem("username", data.username);
+
+      navigate('/home');
+    }
   }
 
-  async function handleGoogleSignIn(){
+  const handleGoogleSignIn = () => {
     try {
-      let data = await google_login();
+      google_login();
     } catch (error) {
       serverResponse(error);
     }
