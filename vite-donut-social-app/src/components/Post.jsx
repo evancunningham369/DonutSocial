@@ -5,10 +5,13 @@ import { get_profile_picture } from '../../api/account.js';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
+import usePosts from './usePosts.jsx';
 
-function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
-
+function Post({ userIdPoster, initialPost }) {
     const { post_id: postId, content, post_datetime } = initialPost;
+    //console.log("Post component Render:", postId);
+    const loggedInUserId = sessionStorage.getItem('userId');
+    const { deletePost } = usePosts(loggedInUserId);
 
     const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike_icon);
@@ -19,9 +22,10 @@ function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
     const postByCurrentUser = loggedInUserId == userIdPoster;
 
     useEffect(() => {
-        get_profile_picture(userIdPoster).then(profilePic => {
+        const fetchProfilePicture = async () => {
+            const profilePic = await get_profile_picture(userIdPoster);
             setPostProfilePicture(profilePic ? profilePic : '/src/public/donut.jpg');
-        });
+        }
         async function setInitialText() {
             try {
                 const data = await post_req.get_liked_posts_by_id(loggedInUserId);
@@ -33,8 +37,9 @@ function Post({ loggedInUserId, userIdPoster, initialPost, deletePost }) {
                 return;
             }
         }
+        fetchProfilePicture();
         setInitialText();
-    }, [])
+    }, []);
 
 
     const handleLike = async () => {
