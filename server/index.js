@@ -32,10 +32,7 @@ const ensureAuthWithRedirect = (redirectURL) => (req, res, next) => {
 
 //ROUTES//
 
-//ACCOUNT ACTION ROUTES//
-
-//create an account
-app.post('/register', authentication_controller.register_account);
+//AUTHENTICATION ACTION ROUTES//
 
 //register a google account
 app.get('/auth/google', ensureAuthWithRedirect('http://localhost:5173/home') ,passport.authenticate('google', {scope: ['profile', 'email']}));
@@ -44,12 +41,17 @@ app.get('/auth/google', ensureAuthWithRedirect('http://localhost:5173/home') ,pa
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/' }),
     authentication_controller.callback_google_account);
-
+    
 //login an account
 app.post('/login' , authentication_controller.handleAuthentication);
 
 //logout an account
 app.get('/logout', authentication_controller.logout);
+
+//ACCOUNT ACTION ROUTES//
+
+//create an account
+app.post('/register', authentication_controller.register_account);
 
 //get an account
 app.get('/:userId', account_controller.get_account);
