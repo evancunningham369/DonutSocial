@@ -1,18 +1,17 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Post from './Post.jsx';
+import Posts from './Posts.jsx';
 import Logout from './useLogout.jsx';
 import useProfilePicture from './useProfilePicture.jsx';
 import usePosts from './usePosts.jsx';
+import { useState } from 'react';
 
 function Home() {
-    let loggedInUserId = sessionStorage.getItem('userId');
-    let loggedInUsername = sessionStorage.getItem('username');
-    
-    const [selection, setSelection] = useState("");
+    const loggedInUserId = sessionStorage.getItem('userId');
+    const loggedInUsername = sessionStorage.getItem('username');
+    const { profilePicture } = useProfilePicture(loggedInUserId);
+    const [selection, setSelection] = useState('general');
 
-    const { profilePicture } = useProfilePicture();
-    const { posts, createPost, getPost, deletePost } = usePosts();
+    const { createPost } = usePosts(loggedInUserId, selection, setSelection);
 
     return (
         <div id='home'>
@@ -26,25 +25,22 @@ function Home() {
                 </div>
 
                 <div className='btn-group button-options' role='group'>
-                    <input id='general' className='btn-check' onClick={getPost} type="radio" name='options' autoComplete='off' defaultChecked />
-                    <label className='btn btn-outline-primary' htmlFor='general'>General Feed</label>
-                    <input id='following' className='btn-check' onClick={getPost} type="radio" name='options' autoComplete='off' />
-                    <label className='btn btn-outline-primary' htmlFor='following'>Following</label>
-
                     <form id="create-post" onSubmit={createPost}>
                         <input name='content' type="text" />
                         <button type='submit'>Post</button>
                     </form>
+                    <br />
+                    <input id='general' className='btn-check' onClick={(e) => setSelection(e.target.id)} type="radio" name='options' autoComplete='off' defaultChecked />
+                    <label className='btn btn-outline-primary' htmlFor='general'>General Feed</label>
+                    <input id='following' className='btn-check' onClick={(e) => setSelection(e.target.id)} type="radio" name='options' autoComplete='off' />
+                    <label className='btn btn-outline-primary' htmlFor='following'>Following</label>
+
                 </div>
 
                 <h2>{loggedInUsername} logged in</h2>
 
             </div>
-            <div className="posts">
-                {posts.length == 0 ?
-                    <h1>No {selection} posts</h1> :
-                    posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} deletePost={deletePost} profilePicture={profilePicture} loggedInUserId={loggedInUserId} initialPost={post} />)}
-            </div>
+            < Posts postType = {selection}/>
         </div>
     )
 }
