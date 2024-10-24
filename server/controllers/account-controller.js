@@ -42,9 +42,9 @@ export const get_profile_picture = async(req, res) => {
             crop: 'fill',
             format:'jpg'
         });
-        res.json(url);
+        return res.status(200).json(url);
     } catch (error) {
-        res.json(error.message);
+        return res.status(500).json(error);
     }
 }
 
