@@ -17,12 +17,13 @@ export const register_account = async(req, res) => {
             'INSERT INTO account (username, hashPass) VALUES($1, $2) RETURNING *',
              [username, hashPass]
              );
-        return res.redirect('http://localhost:5173/home');
+             const newUser = newAccount.rows[0];
+        return res.status(200).json({username: newUser.username, userId: newUser.user_id});
     } catch (error) {
         if(error.constraint){
-            return res.status(400).json("User with that name already exists!");
+            return res.status(400).json({message: 'User with that name already exists!'});
         }
-        return res.status(500).json('An unexpected error occured:');
+        return res.status(500).json({message: 'An unexpected error occured:'});
     }
 }
 
@@ -86,7 +87,7 @@ export const handleAuthentication = (req, res, next) => {
             if(err){
                 return res.status(500).json({message: 'Failed to log in user.' });
             }
-            return res.status(200).redirect('http://localhost:5173/home');
+            return res.status(200).json({username: user.username, userId: user.user_id});
         });
 
     })(req, res, next);
