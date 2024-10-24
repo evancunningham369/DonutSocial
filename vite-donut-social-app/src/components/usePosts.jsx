@@ -1,42 +1,31 @@
 import { useState, useEffect } from "react";
 import * as post_req from '../../api/post.js';
 
-function usePosts(){
+function usePosts(loggedInUserId){
 
     const [posts, setPosts] = useState([]);
-    
-    useEffect(() => {
-        post_req.get_all_posts().then((posts) => setPosts(posts));
-    }, [])
 
     const createPost = async (event) => {
         const { content } = event.currentTarget;
-
         const post = {
             content: content.value,
             userId: loggedInUserId
         }
-
+        
         await post_req.create_post(post);
     }
 
-    const getPost = async (event) => {
-        const { id } = event.currentTarget;
-        if (id == selection) return;
-
+    const getPost = async (selection) => {
         let allPosts;
-        switch (id) {
+        switch (selection) {
             case 'general':
                 allPosts = await post_req.get_all_posts();
-                setSelection('general');
                 break;
             case 'following':
                 allPosts = await post_req.get_following_posts(loggedInUserId);
-                setSelection('following');
                 break;
         }
-
-        setPosts(allPosts);
+        return allPosts;
     }
 
     const deletePost = (postId) => {
