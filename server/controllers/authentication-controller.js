@@ -39,7 +39,7 @@ export const google_strategy = async(accessToken, refreshToken, profile, done) =
           );
         }
         user = user.rows[0];
-        user.accessToken = accessToken;
+        user = {user_id: user.user_id, username: user.username};
         return done(null, user);
       } catch (err) {
         return done(err);
@@ -49,9 +49,10 @@ export const google_strategy = async(accessToken, refreshToken, profile, done) =
 // callback for google register/login
 export const callback_google_account = async(req, res) => {
     if(!req.user){
-        return res.redirect('http://localhost:5173');
+        return res.status(400).json({error: 'User not retrieved'})
     }
-    return res.redirect('http://localhost:5173/home');
+    const user = JSON.stringify(req.user);
+    res.redirect(`http://localhost:5173/home?user=${encodeURIComponent(user)}`);
 }
 
 // Verify account in database
