@@ -7,10 +7,11 @@ import { pool } from "../config/database.js";
 // Creates a post in the database for the account
 export const create_post = async(req, res) => {
     try {
+        
         const dateTime = new Date(Date.now()).toISOString();
         const {content, userId} = req.body;
         const post = await pool.query(
-            'INSERT INTO post(content, post_datetime, user_id) VALUES($1, $2, (SELECT user_id FROM account WHERE user_id=$3)) RETURNING *',
+            'INSERT INTO post(content, post_datetime, user_id) VALUES($1, $2, $3) RETURNING *',
             [content, dateTime, userId]
             );
         res.json(post.rows);
