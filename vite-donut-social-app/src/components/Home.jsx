@@ -3,17 +3,37 @@ import Posts from './Posts.jsx';
 import Logout from './useLogout.jsx';
 import useProfilePicture from './useProfilePicture.jsx';
 import usePosts from './usePosts.jsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Home() {
+    const [isLoading, setIsLoading] = useState(true);
+    const handleGoogleSignIn = async() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userParam = urlParams.get('user');
+        
+        
+        if(userParam){
+            const user = JSON.parse(decodeURIComponent(userParam));
+        
+            sessionStorage.setItem('userId', user.user_id);
+            sessionStorage.setItem('username', user.username);
+        }
+        setIsLoading(false);
+    }
+
+
+    useEffect(() => {
+        handleGoogleSignIn();
+    }, []);
+    
     const loggedInUserId = sessionStorage.getItem('userId');
     const loggedInUsername = sessionStorage.getItem('username');
     const { profilePicture } = useProfilePicture(loggedInUserId);
     const [selection, setSelection] = useState('general');
-
+    
     const { createPost } = usePosts(loggedInUserId, selection, setSelection);
 
-    return (
+    return isLoading ? (<div>Loading...</div>) : (
         <div id='home'>
             <div className='post-header'>
                 <Logout />
