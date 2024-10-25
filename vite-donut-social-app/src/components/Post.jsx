@@ -7,11 +7,12 @@ import { Modal } from 'react-bootstrap';
 import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
 import usePosts from './usePosts.jsx';
 
-function Post({ userIdPoster, initialPost }) {
+function Post({ userIdPoster, initialPost, deletePost }) {
+    
     const { post_id: postId, content, post_datetime } = initialPost;
-    //console.log("Post component Render:", postId);
+
     const loggedInUserId = sessionStorage.getItem('userId');
-    const { deletePost } = usePosts(loggedInUserId);
+    
 
     const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike_icon);
