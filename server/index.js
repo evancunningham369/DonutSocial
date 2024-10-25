@@ -27,7 +27,12 @@ const ensureAuthWithRedirect = (redirectURL) => (req, res, next) => {
     if(!req.isAuthenticated()){
         return next();
     }
-    res.redirect(redirectURL);
+    const user = JSON.stringify({
+        'user_id': req.user.user_id,
+        'username': req.user.username
+    })
+    
+    res.redirect(`${redirectURL}/home?user=${encodeURIComponent(user)}`);
 }
 
 //ROUTES//
@@ -35,7 +40,7 @@ const ensureAuthWithRedirect = (redirectURL) => (req, res, next) => {
 //AUTHENTICATION ACTION ROUTES//
 
 //register a google account
-app.get('/auth/google', ensureAuthWithRedirect('http://localhost:5173/home') ,passport.authenticate('google', {scope: ['profile', 'email']}));
+app.get('/auth/google', ensureAuthWithRedirect('http://localhost:5173'), passport.authenticate('google', {scope: ['profile', 'email']}));
 
 //google authentication callback
 app.get('/auth/google/callback', 
