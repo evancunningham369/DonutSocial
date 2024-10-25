@@ -1,7 +1,7 @@
 const { BASE_URL } = process.env;
 
 export const create_post = async(post) => {
-    console.log(post);
+    
     return await fetch(`${BASE_URL}/post`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
