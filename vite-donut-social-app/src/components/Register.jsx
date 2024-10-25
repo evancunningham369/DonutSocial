@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { register, login, google_login } from '../../api/account.js';
+import { register, login, google_login} from '../../api/account.js';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -48,6 +48,7 @@ function Register() {
   const handleGoogleSignIn = () => {
     try {
       google_login();
+      
     } catch (error) {
       serverResponse(error);
     }
