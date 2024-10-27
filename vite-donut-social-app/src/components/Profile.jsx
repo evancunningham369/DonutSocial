@@ -1,20 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import * as account_req from '../../api/account.js';
 import * as post_req from '../../api/post.js';
 import * as user_action from '../../api/user.js';
-import { useLocation } from "react-router-dom";
+import donut from '../public/donut.jpg';
+import { useParams } from 'react-router-dom';
 import Post from "./Post.jsx";
+import useProfilePicture from "./useProfilePicture.jsx";
 
 function Profile(){
+
     let loggedInUserId = sessionStorage.getItem('userId');
-    const location = useLocation();
-    const { userId } = location.state;
+    
+    const { userId, username } = useParams();
     
     const isOwnProfile = loggedInUserId == userId;
-    const [profilePicture, setProfilePicture] = useState(location.state.profilePicture);
+    const { profilePicture, setProfilePicture } = useProfilePicture(userId);
     const [followText, setFollowText] = useState('Follow');
-    const fileInputRef = useRef(null);
     const [following, setFollowing] = useState(0);
     const [followers, setFollowers] = useState(0);
     const [posts, setPosts] = useState([]);
@@ -35,12 +37,12 @@ function Profile(){
     }
 
     useEffect(() => {
-        getProfileInfo();
         post_req.get_my_posts(userId).then((posts) => setPosts(posts));
         
         if(isOwnProfile) return;
         userFollowingProfile();
-    }, [])
+    }, [profilePicture]);
+
 
     const getPost = async(event) => {
         const { id } = event.currentTarget;
@@ -60,30 +62,22 @@ function Profile(){
 
         setPosts(allPosts);
     }
-
     
-    const handleImage = async() => {
-        if(fileInputRef.current.files) setFileToBase(fileInputRef.current.files[0]);
-    }
-
-    const setFileToBase = (file) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-            const profileImage = reader.result;
-            setProfilePicture(profileImage);
-            uploadProfilePicture(profileImage);
-        }
-    }
-    
-    const uploadProfilePicture = async(profileImage) => {
-        let data = {image: profileImage, userId: loggedInUserId}
-        await account_req.upload_profile_picture(data);
+    const handleFileUpload = async(event) => {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('profilePicture', file);
+        formData.append('userId', loggedInUserId);
+        
+        const response = await account_req.upload_profile_picture(formData);
+        let url = response.profile_picture;
+        setProfilePicture('http://localhost:3001/'+ url.replace(/\\/g, '/'));
     }
 
     const removeProfilePicture = async() => {
         const response = await account_req.delete_profile_picture(loggedInUserId);
         console.log(response);
+        setProfilePicture(donut);
     }
 
     const handleFollow = async() => {
@@ -101,13 +95,15 @@ function Profile(){
 
     return (
         <div className="profile">
-            <h1>User {userId}'s Profile</h1>
+            <h1>{username}'s Profile</h1>
             <div className="profile-picture">
                 <img src={profilePicture} alt="Profile Picture" />
                 <div className="avatar-buttons">
                     {isOwnProfile ? <>
-                        <Button variant='info' className="btn btn-primary" onClick={() => {fileInputRef.current.click()}}>Upload Avatar</Button>
-                        <input onChange={handleImage} multiple={false} ref={fileInputRef} type="file" hidden />
+                        <input style={{opacity: 0}} type="file" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleFileUpload} />
+                        <label className="btn btn-primary" htmlFor='profilePicture'>
+                            Upload New Picture
+                        </label>
                         <Button variant='danger' className="btn btn-primary" onClick={removeProfilePicture} type="button">Remove Avatar</Button>
                     </>: 
                     <button className="btn btn-primary" onClick={handleFollow}>{followText}</button>
@@ -126,7 +122,7 @@ function Profile(){
             </div>
             <div className="user-posts">
             {posts.length == 0 ? <h1>No {selection} posts</h1> : posts.map((post) =>
-                    <Post key={post.post_id} userIdPoster={post.user_id} profilePicture={profilePicture} deletePost={deletePost} loggedInUserId={loggedInUserId} initialPost={post}  />)}
+                    <Post key={post.post_id} deletePost={deletePost} post={post}  />)}
             </div>
         </div>
     )
