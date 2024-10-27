@@ -1,32 +1,30 @@
 import { useState, useEffect } from 'react';
 import * as user_action from '../../api/user.js';
 import * as post_req from '../../api/post.js';
-import { get_profile_picture } from '../../api/account.js';
+import useProfilePicture from './useProfilePicture.jsx';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
-import usePosts from './usePosts.jsx';
 
-function Post({ userIdPoster, initialPost, deletePost }) {
+function Post({post, deletePost }) {
     
-    const { post_id: postId, content, post_datetime } = initialPost;
-
     const loggedInUserId = sessionStorage.getItem('userId');
+    const loggedInUsername = sessionStorage.getItem('username');
     
+    const {username = loggedInUsername, user_id: userIdPoster, post_id: postId, content, post_datetime } = post;
+    
+    const { profilePicture } = useProfilePicture(userIdPoster);
+    
+
 
     const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike_icon);
 
     const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
     const [title, setTitle] = useState();
-    const [postProfilePic, setPostProfilePicture] = useState();
     const postByCurrentUser = loggedInUserId == userIdPoster;
 
     useEffect(() => {
-        const fetchProfilePicture = async () => {
-            const profilePic = await get_profile_picture(userIdPoster);
-            setPostProfilePicture(profilePic ? profilePic : '/src/public/donut.jpg');
-        }
         async function setInitialText() {
             try {
                 const data = await post_req.get_liked_posts_by_id(loggedInUserId);
@@ -38,7 +36,6 @@ function Post({ userIdPoster, initialPost, deletePost }) {
                 return;
             }
         }
-        fetchProfilePicture();
         setInitialText();
     }, []);
 
@@ -53,6 +50,7 @@ function Post({ userIdPoster, initialPost, deletePost }) {
     const handleDelete = async () => {
 
         const response = await user_action.delete_post(postId);
+        
         if (response.ok) {
             setDeleteConfirmation(false);
             setTitle('Post deleted');
@@ -66,11 +64,11 @@ function Post({ userIdPoster, initialPost, deletePost }) {
             <div className="post-heading">
                 <div className="user-post-info">
                     <div className="profile-picture">
-                        <Link to='/profile' state={{ userId: userIdPoster, profilePicture: postProfilePic }}>
-                            <img src={postProfilePic} alt="post profile picture" />
+                        <Link to={`/profile/${userIdPoster}/${username}`}>
+                            <img style={{ width: '50px', height: '50px' }}src={profilePicture} alt="post profile picture" />
                         </Link>
                     </div>
-                    <h4 style={{ display: 'inline' }}>User {userIdPoster}</h4>
+                    <h4 style={{ display: 'inline' }}>{username}</h4>
                 </div>
                 <p className='post-datetime'>Posted on: {post_datetime}</p>
             </div>
@@ -91,8 +89,8 @@ function Post({ userIdPoster, initialPost, deletePost }) {
                     <div className='post'>
                         <div className="post-heading">
                             <div className="user-post-info">
-                                <img style={{ display: 'inline', width: '25px', height: '25px' }} src={postProfilePic} alt="post profile picture" />
-                                <h4 style={{ display: 'inline' }}>User {userIdPoster}</h4>
+                                <img style={{ display: 'inline', width: '25px', height: '25px' }} src={profilePicture} alt="post profile picture" />
+                                <h4 style={{ display: 'inline' }}>{username}</h4>
                             </div>
                             <p className='post-datetime'>Posted on: {post_datetime}</p>
                         </div>
