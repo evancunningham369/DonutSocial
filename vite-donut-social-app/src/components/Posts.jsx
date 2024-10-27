@@ -3,6 +3,7 @@ import Post from './Post.jsx'
 import usePosts from "./usePosts.jsx";
 
 function Posts({postType}) {
+
     const [posts, setPosts] = useState([]);
     let loggedInUserId = sessionStorage.getItem('userId');
     const { getPost, deletePost } = usePosts(loggedInUserId, posts, setPosts);
@@ -27,7 +28,7 @@ function Posts({postType}) {
         <div className="posts">
                 {posts.length === 0 ?
                     <h1>No {postType} posts</h1> :
-                    posts.map((post) => <Post key={post.post_id} userIdPoster={post.user_id} initialPost={post} deletePost={deletePost} />)}
+                    posts.map((post) => <Post key={post.post_id} post={post} deletePost={deletePost} />)}
             </div>
     )
 }
