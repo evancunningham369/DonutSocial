@@ -17,14 +17,12 @@ export const get_account = async(req, res) => {
 
 // Upload profile picture
 export const upload_profile_picture = async(req, res) => {
+    const userId = req.body.userId;
+    const profilePicturePath = req.file.path;
+    
     try {
-        const { userId, image } = req.body;
-        if(cloudinary == undefined){
-            throw new Error("Cloudinary is undefined")
-        }
-        const cloudRes = await cloudinary.uploader.upload(image, {public_id: `user_${userId}_profile_picture`});
-        const user = await pool.query('UPDATE account SET profile_picture_id=$1 WHERE user_id=$2 RETURNING *', [cloudRes.public_id, userId]);
-        res.json(user.rows);
+        const user = await pool.query('UPDATE account SET profile_picture=$1 WHERE user_id=$2 RETURNING profile_picture', [profilePicturePath, userId]);
+        res.json(user.rows[0]);
     } catch (error) {
         res.json(error.message);
     }
@@ -34,15 +32,10 @@ export const upload_profile_picture = async(req, res) => {
 export const get_profile_picture = async(req, res) => {
     try {
         const { userId } = req.params;
-        const response = await pool.query('SELECT profile_picture_id FROM account WHERE user_id=$1', [userId]);
-        const profilePictureId = response.rows[0].profile_picture_id;
-        const url = await cloudinary.url(profilePictureId, {
-            width: 100,
-            height: 150,
-            crop: 'fill',
-            format:'jpg'
-        });
-        return res.status(200).json(url);
+        const response = await pool.query('SELECT profile_picture FROM account WHERE user_id=$1', [userId]);
+        
+        const profilePictureURL = response.rows[0].profile_picture;
+        return res.status(200).json(profilePictureURL);
     } catch (error) {
         return res.status(500).json(error);
     }
@@ -51,12 +44,10 @@ export const get_profile_picture = async(req, res) => {
 export const delete_profile_picture = async(req, res) => {
     try {
         const { userId } = req.params;
-        const user = await pool.query('UPDATE account SET profile_picture_id=NULL WHERE user_id=$1 RETURNING(SELECT profile_picture_id FROM account WHERE user_id=$1)', [userId]);
-        const profilePictureId = user.rows[0].profile_picture_id;
-        cloudinary.uploader.destroy(profilePictureId);
-        res.json(user);
+        const user = await pool.query('UPDATE account SET profile_picture=NULL WHERE user_id=$1', [userId]);
+        res.status(200).json('Successfully removed profile picture');
     } catch (error) {
-        res.json(error);
+        res.status(500).json(error);
     }
 }
 
