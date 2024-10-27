@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import * as post_req from '../../api/post.js';
 
 function usePosts(loggedInUserId, posts, setPosts){
