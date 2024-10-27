@@ -46,7 +46,13 @@ export const get_post = async (req, res) => {
 // Get all posts
 export const get_all_posts = async(req, res) => {
     try {
-        const allPosts = await pool.query('SELECT * FROM post');
+        const allPosts = await pool.query(`
+            SELECT account.username, 
+            p.user_id, p.post_id, p.content, p.post_datetime, p.liked_users, p.liked
+            FROM post p 
+            JOIN account ON p.user_id = account.user_id;`);
+        
+        
         res.json(allPosts.rows);
     } catch (error) {
         res.json(error.message);
@@ -103,9 +109,10 @@ export const delete_post = async(req, res) => {
     try {
         const { postId } = req.params;
         const deletedPost = await pool.query('DELETE FROM post WHERE post_id=$1', [postId]);
-        const deleteAccountLikes = await pool.query('UPDATE account SET liked_posts = array_remove(liked_posts, $1)', [postId]);
-        res.json(deletedPost.rows);
+        //const deleteAccountLikes = await pool.query('UPDATE account SET liked_posts = array_remove(liked_posts, $1)', [postId]);
+        
+        res.status(200).json(deletedPost.rows);
     } catch (error) {
-        res.json(error.message);
+        res.status(500).json(error.message);
     }
 }
