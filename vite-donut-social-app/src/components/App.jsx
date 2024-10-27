@@ -6,6 +6,7 @@ import Profile from "./Profile";
 import {BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
+  console.log("App");
     return (
       <>
         <Header />
@@ -13,7 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Register/>}/>
             <Route path="/home" element={<Home/>}/>
-            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/profile/:userId/:username" element={<Profile/>}/>
           </Routes>
       </BrowserRouter>
       </>
