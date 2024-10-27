@@ -28,16 +28,21 @@ export const google_login = async() => {
 }
 
 export const upload_profile_picture = async(data) => {
+  
   let serverResponse = await fetch (`${BASE_URL}/upload-profile-picture`, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(data)
+    body: data
   });
+  
   return serverResponse.json();
 }
 
 export const get_profile_picture = async(userId) => {
   let serverResponse = await fetch (`${BASE_URL}/profile-picture/${userId}`);
+  
+  if(!serverResponse.ok){
+    return '/src/public/donut.jpg';
+  }
   return serverResponse.json();
 }
 
