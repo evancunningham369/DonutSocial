@@ -1,13 +1,20 @@
 import cors from 'cors';
 import express from 'express';
 const app = express();
+import path from 'path';
+import { fileURLToPath } from 'url';
 import passport from './config/passport.js';
 import session from 'express-session';
+const upload = multer({ dest: 'uploads/'});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import * as authentication_controller from './controllers/authentication-controller.js'
 import * as account_controller from './controllers/account-controller.js';
 import * as user_controller from './controllers/user-controller.js';
 import * as post_controller from './controllers/post-controller.js';
+import multer from 'multer';
+
 
 //middleware
 app.use(cors());
@@ -21,6 +28,9 @@ app.use(session({
 app.use(passport.initialize());
 
 app.use(passport.session());
+
+//STATIC ROUTES//
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //ensure incoming request is authenticated
 const ensureAuthWithRedirect = (redirectURL) => (req, res, next) => {
@@ -62,7 +72,7 @@ app.post('/register', authentication_controller.register_account);
 app.get('/:userId', account_controller.get_account);
 
 //upload account profile picture
-app.post('/upload-profile-picture', account_controller.upload_profile_picture);
+app.post('/upload-profile-picture', upload.single('profilePicture') ,account_controller.upload_profile_picture);
 
 //get account profile picture
 app.get('/profile-picture/:userId', account_controller.get_profile_picture);
