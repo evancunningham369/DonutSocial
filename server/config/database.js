@@ -43,7 +43,7 @@ const createDatabaseAndTables = async () => {
                 hashPass VARCHAR(60),
                 google_id VARCHAR(60) UNIQUE,
                 followed_users integer[],
-                profile_picture bytea
+                profile_picture TEXT
         );
             `);
 
