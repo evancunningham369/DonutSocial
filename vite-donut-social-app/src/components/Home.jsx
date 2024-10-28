@@ -7,35 +7,37 @@ import { useEffect, useState } from 'react';
 
 function Home() {
     console.log("Home");
-    
-    const [isLoading, setIsLoading] = useState(true);
+
+    const [loggedInUserId, setLoggedInUserId] = useState(sessionStorage.getItem('userId'));
+    const loggedInUsername = sessionStorage.getItem('username');
+    const [selection, setSelection] = useState('general');
+    const { profilePicture } = useProfilePicture(loggedInUserId);
+    const { createPost } = usePosts(loggedInUserId, selection, setSelection);
+
     const handleGoogleSignIn = async() => {
         const urlParams = new URLSearchParams(window.location.search);
         const userParam = urlParams.get('user');
     
         if(userParam){
             const user = JSON.parse(decodeURIComponent(userParam));
-        
+            
             sessionStorage.setItem('userId', user.user_id);
             sessionStorage.setItem('username', user.username);
+            setLoggedInUserId(user.user_id);
         }
-        setIsLoading(false);
     }
-
-
+    
     useEffect(() => {
-        handleGoogleSignIn();
-    }, []);
+        if(!loggedInUserId){
+            handleGoogleSignIn();
+        }
+    }, [loggedInUserId]);
     
-    const loggedInUserId = sessionStorage.getItem('userId');
-    const loggedInUsername = sessionStorage.getItem('username');
-    const { profilePicture } = useProfilePicture(loggedInUserId);
+    if(!loggedInUserId){
+        return <div>Loading...</div>
+    }
     
-    const [selection, setSelection] = useState('general');
-    
-    const { createPost } = usePosts(loggedInUserId, selection, setSelection);
-    
-    return isLoading ? (<div>Loading...</div>) : (
+    return (
         <div id='home'>
             <div className='post-header'>
                 <Logout />
@@ -62,7 +64,7 @@ function Home() {
                 <h2>{loggedInUsername} logged in</h2>
 
             </div>
-            < Posts profilePicture={profilePicture} postType = {selection}/>
+            < Posts postType = {selection}/>
         </div>
     )
 }
