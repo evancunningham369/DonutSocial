@@ -5,7 +5,7 @@ import * as post_req from '../../api/post.js';
 import * as user_action from '../../api/user.js';
 import donut from '../public/donut.jpg';
 import { useParams } from 'react-router-dom';
-import Post from "./Post.jsx";
+import Posts from "./Posts.jsx";
 import useProfilePicture from "./useProfilePicture.jsx";
 
 function Profile(){
@@ -42,26 +42,6 @@ function Profile(){
         if(isOwnProfile) return;
         userFollowingProfile();
     }, [profilePicture]);
-
-
-    const getPost = async(event) => {
-        const { id } = event.currentTarget;
-        if(id == selection) return;
-
-        let allPosts;
-        switch(id){
-            case 'user': 
-                allPosts = await post_req.get_my_posts(isOwnProfile ? loggedInUserId : userId);
-                setSelection('user');
-                break;
-            case 'liked': 
-                allPosts = await post_req.get_liked_posts(isOwnProfile ? loggedInUserId: userId);
-                setSelection('liked');
-                break;
-        }
-
-        setPosts(allPosts);
-    }
     
     const handleFileUpload = async(event) => {
         const file = event.target.files[0];
@@ -88,11 +68,6 @@ function Profile(){
         }
     }
 
-    const deletePost = (postId) => {
-        const newPosts = posts.filter(post => post.post_id !== postId);
-        setPosts(newPosts);
-    }
-
     return (
         <div className="profile">
             <h1>{username}'s Profile</h1>
@@ -115,14 +90,13 @@ function Profile(){
                     <h4>Following: {following}</h4>
             </div>
             <div className='btn-group' role="group">
-                <input className='btn-check' id='user' onClick={getPost} type="radio" name='options' autoComplete="off" defaultChecked />
-                <label className='btn btn-outline-primary'htmlFor="user">My Posts</label>
-                <input className='btn-check' id='liked' onClick={getPost} type="radio" name='options' autoComplete="off" />
-                <label className='btn btn-outline-primary'htmlFor="liked">Liked Posts</label>
+                <input id='my-posts' className='btn-check' onChange={(e) => setSelection('user')} type="radio" name='options' autoComplete="off" defaultChecked />
+                <label className='btn btn-outline-primary'htmlFor="my-posts">My Posts</label>
+                <input id='liked-posts' className='btn-check' onChange={(e) => setSelection('liked')} type="radio" name='options' autoComplete="off" />
+                <label className='btn btn-outline-primary'htmlFor="liked-posts">Liked Posts</label>
             </div>
             <div className="user-posts">
-            {posts.length == 0 ? <h1>No {selection} posts</h1> : posts.map((post) =>
-                    <Post key={post.post_id} deletePost={deletePost} post={post}  />)}
+            < Posts postType = {selection}/>
             </div>
         </div>
     )
