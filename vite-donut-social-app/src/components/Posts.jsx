@@ -13,7 +13,6 @@ function Posts({postType}) {
             const allPosts = await getPost(postType);
             if(JSON.stringify(posts) !== JSON.stringify(allPosts)){
                 setPosts(allPosts);
-                
             }
         } catch (error) {
             console.error("Error fetching posts:", error);
