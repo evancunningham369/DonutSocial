@@ -1,7 +1,7 @@
 import * as post_req from '../../api/post.js';
 
 function usePosts(loggedInUserId, posts, setPosts){
-    
+
     const createPost = async (event) => {
         const { content } = event.currentTarget;
         const post = {
@@ -13,7 +13,7 @@ function usePosts(loggedInUserId, posts, setPosts){
     }
 
     const getPost = async (selection) => {
-        let allPosts;
+        let allPosts = [];
         switch (selection) {
             case 'general':
                 allPosts = await post_req.get_all_posts();
@@ -21,7 +21,14 @@ function usePosts(loggedInUserId, posts, setPosts){
             case 'following':
                 allPosts = await post_req.get_following_posts(loggedInUserId);
                 break;
+            case 'user':
+                allPosts = await post_req.get_my_posts(loggedInUserId);
+                break;
+            case 'liked':
+                allPosts = await post_req.get_liked_posts(loggedInUserId);
+                break;
         }
+        
         const formatOptions = {
             year: 'numeric',
             month: 'long',
@@ -30,7 +37,7 @@ function usePosts(loggedInUserId, posts, setPosts){
             minute: '2-digit',
             hour12: true
         }
-        const updatedPosts = allPosts.map(post => ({
+        const updatedPosts = (allPosts || []).map(post => ({
             ...post,
             post_datetime: new Date(post.post_datetime).toLocaleString(undefined, formatOptions)
         }));
