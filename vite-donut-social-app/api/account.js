@@ -54,7 +54,7 @@ export const delete_profile_picture = async(userId) => {
 }
 
 export const user_following_profile = async(userId, profileId) => {
-  let serverResponse = await fetch(`${BASE_URL}/user-following/?userId=${userId}&profileId=${profileId}`, {
+  let serverResponse = await fetch(`${BASE_URL}/user-following/${userId}/${profileId}`, {
     method: 'POST',
     headers: {"Content-Type": "application/json"}
   });
@@ -63,5 +63,5 @@ export const user_following_profile = async(userId, profileId) => {
 
 export const get_profile_info = async(userId) => {
   let serverResponse = await fetch(`${BASE_URL}/profile-info/${userId}`);
-  return await serverResponse.json();
+  return serverResponse;
 }
