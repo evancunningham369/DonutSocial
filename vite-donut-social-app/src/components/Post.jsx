@@ -14,10 +14,7 @@ function Post({post, deletePost }) {
     const {username = loggedInUsername, user_id: userIdPoster, post_id: postId, content, post_datetime } = post;
     
     const { profilePicture } = useProfilePicture(userIdPoster);
-    
 
-
-    const [likeText, setLikedText] = useState("Like");
     const [likeBtn, setLikeBtn] = useState(unlike_icon);
 
     const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
@@ -25,13 +22,14 @@ function Post({post, deletePost }) {
     const postByCurrentUser = loggedInUserId == userIdPoster;
 
     useEffect(() => {
+        
         async function setInitialText() {
             try {
-                const data = await post_req.get_liked_posts_by_id(loggedInUserId);
-                if (data.liked_posts == null) return;
-                const isPostLiked = data.liked_posts.includes(postId);
-                setLikeBtn(isPostLiked ? like_icon : unlike_icon);
-                setLikedText(isPostLiked ? "Unlike" : "Like");
+                const likedUsers = await post_req.get_liked_posts_by_id(postId);
+                
+                if(likedUsers.liked_users.includes(parseInt(loggedInUserId, 10))){
+                    setLikeBtn(like_icon);
+                }
             } catch (error) {
                 return;
             }
@@ -41,10 +39,8 @@ function Post({post, deletePost }) {
 
 
     const handleLike = async () => {
-        setLikeBtn(likeText == "Like" ? like_icon : unlike_icon);
-        setLikedText(likeText == "Like" ? "Unlike" : "Like");
-
-        likeText == "Like" ? await user_action.like_post(loggedInUserId, postId) : await user_action.unlike_post(loggedInUserId, postId);
+        const response = await user_action.like_post(loggedInUserId, postId);
+        setLikeBtn(response.liked ? like_icon : unlike_icon);
     }
 
     const handleDelete = async () => {
