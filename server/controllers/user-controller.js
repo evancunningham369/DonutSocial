@@ -3,50 +3,76 @@ import { pool } from "../config/database.js";
  * File to hold API requests for user actions
  */
 
-// Adds user to list of users user is following
+// Adds/Removes follower/followed user relationship from follower table
 export const follow_user = async (req, res) => {
+        const { followerId, followedId } = req.params;
     try {
-        const { userId, userToFollow } = req.query;
-        const user = await pool.query('UPDATE account SET followed_users = array_append(followed_users, $2) WHERE user_id=$1 RETURNING *', [userId, userToFollow]);
-        const followedUser = await pool.query('UPDATE account SET followers = array_append(followers, $2) WHERE user_id=$1', [userToFollow, userId]);
-        res.json(user.rows);
+        const result = await pool.query(`
+            SELECT * 
+            FROM followers 
+            WHERE follower_id = $1 AND followed_id = $2`,
+             [followerId, followedId]);
+
+        if(result.rows.length > 0){
+            await pool.query(`
+                DELETE FROM followers
+                WHERE follower_id = $1 AND followed_id = $2`,
+            [followerId, followedId]);
+            res.status(200).json({follow: false, message: 'Unfollowed successfully'});
+        }
+        else{
+            await pool.query(`
+                INSERT INTO followers (follower_id, followed_id) 
+                VALUES ($1, $2)`, 
+                [followerId, followedId]);
+                res.status(200).json({follow: true, message: 'Followed successfully'});
+        }
+        
     } catch (error) {
-        res.json(error.message);
+        res.status(500).json(error.message);
     }
 }
 
-// Removes user from list of users user is following
-export const unfollow_user = async(req, res) => {
-    try {
-        const { userId, userToUnfollow } = req.query;
-        const user = await pool.query('UPDATE account SET followed_users = array_remove(followed_users, $2) WHERE user_id=$1', [userId, userToUnfollow]);
-        const unfollowedUser = await pool.query('UPDATE account SET followers = array_remove(followers, $2) WHERE user_id=$1', [userToUnfollow, userId]);
-        res.json(user.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-}
-
-// Adds post to list of posts user liked
+// Adds or removes userId from liked posts array
 export const like_post = async (req, res) => {
     try {
-        const { userId, postId } = req.query;
-        const updatedPost = await pool.query('UPDATE post SET liked_users= array_append(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
-        const updatedAccount = await pool.query('UPDATE account SET liked_posts= array_append(liked_posts, $2) WHERE user_id = $1 RETURNING *', [userId, postId]);
-        res.json(updatedPost.rows);
-    } catch (error) {
-        res.json(error.message);
-    }
-}
+        
+        const { userId, postId } = req.params;
 
-// Removes post from list of posts that users has liked
-export const unlike_post = async (req, res) => {
-    try {
-        const { userId, postId } = req.query;
-        const updatedPost = await pool.query('UPDATE post SET liked_users = array_remove(liked_users, $1) WHERE post_id = $2 RETURNING *', [userId, postId]);
-        const updatedAccount = await pool.query('UPDATE account SET liked_posts = array_remove(liked_posts, $2) WHERE user_id = $1 RETURNING *', [userId, postId]);
-        res.json(updatedPost.rows);
+        const post = await pool.query(`
+            SELECT liked_users
+            FROM post
+            WHERE post_id = $1`,
+        [postId]);
+        
+        if(post.rows.length === 0){
+            
+            return res.status(404).json({message: 'Post not found'});
+        }
+        
+        const likedUsers = post.rows[0].liked_users || [];
+
+        let updatedPost;
+        if(likedUsers.includes(Number(userId))){
+            updatedPost = await pool.query(
+            `UPDATE post
+                SET liked_users= array_remove(liked_users, $1) 
+                WHERE post_id = $2`,
+            [userId, postId]);
+
+            res.json({liked: false})
+        }
+        else{
+        updatedPost = await pool.query(`
+            UPDATE post 
+            SET liked_users = array_append(liked_users, $1) 
+            WHERE post_id = $2`,
+             [userId, postId]);
+
+             res.json({liked: true});
+        }
+
     } catch (error) {
-        res.json(error.message);
+        res.status(500).json(error.message);
     }
 }
