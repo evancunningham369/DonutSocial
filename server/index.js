@@ -84,17 +84,11 @@ app.get('/profile-info/:userId', account_controller.get_profile_info);
 
 //ACCOUNT USER ACTION ROUTES
 
-//follow user
-app.patch('/follow-user/', user_controller.follow_user);
+//follow/unfollow user
+app.patch('/follow-user/:followerId/:followedId', user_controller.follow_user);
 
-//unfollow user
-app.patch('/unfollow-user/', user_controller.unfollow_user)
-
-//like post
-app.patch('/like-post/', user_controller.like_post);
-
-//unlike post
-app.patch('/unlike-post/', user_controller.unlike_post);
+//like/unlike post
+app.post('/like-post/:userId/:postId', user_controller.like_post);
 
 //ACCOUNT POST ROUTES//
 
@@ -117,7 +111,7 @@ app.get('/followed-user-posts/:userId', post_controller.get_user_following_posts
 app.get('/liked-posts/:userId', post_controller.get_user_liked_posts);
 
 //get all liked posts by post_id by the current account
-app.get('/liked-posts-id/:userId', post_controller.get_user_liked_posts_id);
+app.get('/liked-posts-id/:postId', post_controller.get_user_liked_posts_id);
 
 //update a post
 app.patch('/post/:postId', post_controller.update_post);
@@ -126,7 +120,7 @@ app.patch('/post/:postId', post_controller.update_post);
 app.delete('/post/:postId', post_controller.delete_post);
 
 // ACCOUNT CHECK ROUTES
-app.post('/user-following/', account_controller.is_user_following);
+app.post('/user-following/:followerId/:followedId', account_controller.is_user_following);
 
 app.listen(3001, () => {
     console.log("Server has started on port 3001");
