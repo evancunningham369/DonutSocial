@@ -19,29 +19,27 @@ function Profile(){
     const [followText, setFollowText] = useState('Follow');
     const [following, setFollowing] = useState(0);
     const [followers, setFollowers] = useState(0);
-    const [posts, setPosts] = useState([]);
-    const [selection, setSelection] = useState("");
-
-    const userFollowingProfile = async() => {
-        const isUserFollowing = await account_req.user_following_profile(loggedInUserId, userId);
-        setFollowText(isUserFollowing.is_following ? "Unfollow": "Follow");
-    }
+    const [selection, setSelection] = useState('user');
 
     const getProfileInfo = async() => {
-        const profileInfo = await account_req.get_profile_info(userId);
         
-        const { followingCount: following, followerCount: followers } = profileInfo;
-        
-        setFollowers(followers);
-        setFollowing(following);
+        if(!isOwnProfile){
+            const response = await account_req.user_following_profile(loggedInUserId, userId);
+
+            setFollowText(response.follow ? 'Unfollow' : 'Follow');
+        }
+        const response = await account_req.get_profile_info(userId);
+        const profileInfo = await response.json();
+        if(response.ok){
+            
+            setFollowing(profileInfo.followingCount);
+            setFollowers(profileInfo.followerCount);
+        }
     }
 
     useEffect(() => {
-        post_req.get_my_posts(userId).then((posts) => setPosts(posts));
-        
-        if(isOwnProfile) return;
-        userFollowingProfile();
-    }, [profilePicture]);
+        getProfileInfo();
+    }, [profilePicture, followText]);
     
     const handleFileUpload = async(event) => {
         const file = event.target.files[0];
@@ -61,10 +59,10 @@ function Profile(){
     }
 
     const handleFollow = async() => {
-        const response = followText == "Follow" ?  await user_action.follow_user(loggedInUserId, userId): await user_action.unfollow_user(loggedInUserId, userId);
-
+        const response = await user_action.follow_user(loggedInUserId, userId);
+        let data = await response.json();
         if(response.ok){
-            setFollowText(followText == "Follow" ? "Unfollow" : "Follow");
+            setFollowText(data.follow ? 'Unfollow' : 'Follow');
         }
     }
 
