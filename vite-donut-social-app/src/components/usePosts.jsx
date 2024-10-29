@@ -29,6 +29,7 @@ function usePosts(loggedInUserId, posts, setPosts){
                 break;
         }
         
+        
         const formatOptions = {
             year: 'numeric',
             month: 'long',
