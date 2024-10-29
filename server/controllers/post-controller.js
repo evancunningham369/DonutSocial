@@ -47,11 +47,9 @@ export const get_post = async (req, res) => {
 export const get_all_posts = async(req, res) => {
     try {
         const allPosts = await pool.query(`
-            SELECT account.username, 
-            p.user_id, p.post_id, p.content, p.post_datetime, p.liked_users, p.liked
-            FROM post p 
-            JOIN account ON p.user_id = account.user_id;`);
-        
+            SELECT *
+            FROM post
+            ORDER BY post.post_datetime DESC`);
         
         res.json(allPosts.rows);
     } catch (error) {
@@ -59,15 +57,22 @@ export const get_all_posts = async(req, res) => {
     }
 }
 
-// Gets all posts that the user is following
+// Gets all posts from users that the user is following
 export const get_user_following_posts = async(req, res) => {
     try {
         const { userId } = req.params;
-        const users_followed = await pool.query('SELECT followed_users FROM account WHERE user_id=$1', [userId]);
-        const followingPosts = await pool.query('SELECT * FROM post WHERE user_id=ANY($1)', [users_followed.rows[0].followed_users]);
-        res.json(followingPosts.rows);
+        const result = await pool.query(`
+            SELECT post.*
+            FROM post
+            JOIN followers
+            ON post.user_id = followers.followed_id
+            WHERE followers.follower_id = $1
+            ORDER BY post.post_datetime DESC`,
+        [userId]);
+
+        res.status(200).json(result.rows);
     } catch (error) {
-        res.json(error.message);
+        res.status(500).json(error.message);
     }
 }
 
@@ -75,7 +80,12 @@ export const get_user_following_posts = async(req, res) => {
 export const get_user_liked_posts = async(req, res) => {
     try {
         const { userId } = req.params;
-        const likedPosts = await pool.query('SELECT * FROM post WHERE $1=ANY(liked_users)', [userId]);
+        const likedPosts = await pool.query(`
+            SELECT * 
+            FROM post 
+            WHERE $1=ANY(liked_users)
+            ORDER BY post.post_datetime DESC`
+            , [userId]);
         res.json(likedPosts.rows);
     } catch (error) {
         res.json(error.message);
@@ -85,11 +95,12 @@ export const get_user_liked_posts = async(req, res) => {
 // Gets all post_ids that the user has liked
 export const get_user_liked_posts_id = async(req, res) => {
     try {
-        const { userId } = req.params;
-        const likedPostIds = await pool.query('SELECT liked_posts FROM account WHERE user_id=$1', [userId]);
-        res.send(likedPostIds.rows[0]);
-    } catch (error) {
-        res.json(error.message);
+        const { postId } = req.params;
+        const likedUserIds = await pool.query('SELECT liked_users FROM post WHERE post_id=$1', [postId]);
+        
+        res.status(200).json(likedUserIds.rows[0]);
+    } catch (error) {      
+        res.status(500).json(error.message);
     }
 }
 
@@ -97,7 +108,13 @@ export const get_user_liked_posts_id = async(req, res) => {
 export const get_user_posts = async(req, res) => {
     try {
         const { userId } = req.params;
-        const allPosts = await pool.query('SELECT * FROM post WHERE user_id=$1', [userId]);
+        const allPosts = await pool.query(`
+            SELECT * 
+            FROM post 
+            WHERE user_id=$1
+            ORDER BY post.post_datetime DESC`,
+             [userId]);
+
         res.json(allPosts.rows);
     } catch (error) {
         res.json(error.message);
