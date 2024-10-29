@@ -42,7 +42,6 @@ const createDatabaseAndTables = async () => {
                 username VARCHAR(15) UNIQUE,
                 hashPass VARCHAR(60),
                 google_id VARCHAR(60) UNIQUE,
-                followed_users integer[],
                 profile_picture TEXT
         );
             `);
@@ -53,9 +52,17 @@ const createDatabaseAndTables = async () => {
                 post_id SERIAL PRIMARY KEY,
                 content VARCHAR(255) NOT NULL,
                 post_datetime TIMESTAMP,
-                user_id int REFERENCES account(user_id),
+                user_id INT NOT NULL REFERENCES account(user_id) ON DELETE CASCADE,
                 liked_users integer[],
                 liked BOOLEAN DEFAULT FALSE
+        );
+            `);
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS followers (
+                follower_id INT NOT NULL REFERENCES account(user_id) ON DELETE CASCADE,
+                followed_id INT NOT NULL REFERENCES account(user_id) ON DELETE CASCADE,
+                PRIMARY KEY (follower_id, followed_id)
         );
             `);
 
