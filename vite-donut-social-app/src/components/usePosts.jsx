@@ -1,9 +1,10 @@
 import * as post_req from '../../api/post.js';
 
-function usePosts(loggedInUserId, posts, setPosts){
-
-    const createPost = async (event) => {
-        const postContent = event.target.content.value;
+function usePosts(userId, posts, setPosts){
+    const loggedInUserId = sessionStorage.getItem('userId');
+    const createPost = async () => {
+        
+        const postContent = document.getElementById('contentField').textContent;
         
         const post = {
             content: postContent,
@@ -12,8 +13,9 @@ function usePosts(loggedInUserId, posts, setPosts){
         
         await post_req.create_post(post);
     }
-
+    
     const getPost = async (selection) => {
+
         let allPosts = [];
         switch (selection) {
             case 'general':
@@ -23,10 +25,10 @@ function usePosts(loggedInUserId, posts, setPosts){
                 allPosts = await post_req.get_following_posts(loggedInUserId);
                 break;
             case 'user':
-                allPosts = await post_req.get_my_posts(loggedInUserId);
+                allPosts = await post_req.get_my_posts(userId);
                 break;
             case 'liked':
-                allPosts = await post_req.get_liked_posts(loggedInUserId);
+                allPosts = await post_req.get_liked_posts(userId);
                 break;
         }
         
