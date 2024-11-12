@@ -3,7 +3,6 @@ import * as user_action from '../../api/user.js';
 import * as post_req from '../../api/post.js';
 import useProfilePicture from './useProfilePicture.jsx';
 import { Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
 
 function Post({post, deletePost }) {
@@ -16,8 +15,6 @@ function Post({post, deletePost }) {
 
     const [likeBtn, setLikeBtn] = useState(unlike_icon);
 
-    const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
-    const [title, setTitle] = useState();
     const postByCurrentUser = loggedInUserId == userIdPoster;
 
     useEffect(() => {
@@ -47,10 +44,14 @@ function Post({post, deletePost }) {
         const response = await user_action.delete_post(postId);
         
         if (response.ok) {
-            setDeleteConfirmation(false);
-            setTitle('Post deleted');
             deletePost(postId);
+            toggleModal();
         }
+    }
+
+    const toggleModal = () => {
+        const modal = document.getElementById('deleteConfirmationModal');
+        modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 
     return (
@@ -59,7 +60,7 @@ function Post({post, deletePost }) {
                 <div className="user-post-info">
                     <div className="profile-picture">
                         <Link to={`/profile/${userIdPoster}/${username}`}>
-                            <img src={profilePicture} alt="post profile picture" />
+                            <img className='custom-border-light' src={profilePicture} alt="post profile picture" />
                         </Link>
                     </div>
                     <h4 style={{ display: 'inline' }}>{username}</h4>
@@ -72,32 +73,36 @@ function Post({post, deletePost }) {
             <div className="post-action-btn-group">
                 <button className='like-btn' onClick={handleLike}>{likeBtn}</button>
 
-                {postByCurrentUser && (<button className='trash' onClick={() => { setDeleteConfirmation(true); setTitle('Delete this post?') }}>{trash_icon}</button>)}
+                {postByCurrentUser && (<button className='trash' onClick={toggleModal}>{trash_icon}</button>)}
             </div>
 
-            <Modal show={showDeleteConfirmation} size='lg'>
-                <Modal.Header>
-                    <Modal.Title>{title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='post'>
-                        <div className="post-heading">
-                            <div className="user-post-info">
-                                <img style={{ display: 'inline', width: '25px', height: '25px' }} src={profilePicture} alt="post profile picture" />
-                                <h4 style={{ display: 'inline' }}>{username}</h4>
+            {/* DELETE CONFIRMATION MODAL BEGIN*/}
+            <div id='deleteConfirmationModal' className='modal' style={{display: 'none'}}>
+                <div id="modal-container">
+                    <div id='modal-header'>
+                        <h2 id='modal-title'>Delete this post?</h2>
+                        <span id="close" onClick={toggleModal}>x</span>
+                    </div>
+                    <div id='modal-body'>
+                        <div className='post'>
+                            <div className="post-heading">
+                                <div className="user-post-info">
+                                    <img style={{ display: 'inline', width: '25px', height: '25px' }} src={profilePicture} alt="post profile picture" />
+                                    <h4 style={{ display: 'inline' }}>{username}</h4>
+                                </div>
+                                <p className='post-datetime'>Posted on: {post_datetime}</p>
                             </div>
-                            <p className='post-datetime'>Posted on: {post_datetime}</p>
-                        </div>
-                        <div className="content">
-                            <p>{content}</p>
+                            <div className="content">
+                                <p>{content}</p>
+                            </div>
                         </div>
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className='btn btn-outline-danger' onClick={handleDelete}>Delete Post</button>
-                    <button className='btn btn-outline-primary' onClick={() => setDeleteConfirmation(false)}>Cancel</button>
-                </Modal.Footer>
-            </Modal>
+                    <div id='modal-footer'>
+                        <button id='modal-button' className='button' onClick={handleDelete}>Delete Post</button>
+                    </div>
+                </div>
+            </div>
+            {/* DELETE CONFIRMATION MODAL END*/}
         </div>
     );
 }
