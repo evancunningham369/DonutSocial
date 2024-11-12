@@ -1,91 +1,384 @@
+#root{
+  --background-color: rgb(198, 121, 149);
+  --foreground-color: rgba(187, 83, 119, 0.767);
+  --input-background-color: rgba(220, 95, 139, 0.767);
+  --button-selected-color: rgba(159, 70, 101, 0.767);
+}
+
 html,
 body,
 #root,
 main {
-  height: 100%;
   margin: 0;
   padding: 0;
-  position: relative;
-  background-color: grey;
+  height: 100%;
+  background-color: var(--background-color);
+  font-family: "Roboto", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-#header{
-    margin: 0px;
-    background-color: rgb(155, 56, 56);
-    padding: .5em;
-    text-align: center;
+.button{
+  background-color: var(--input-background-color);
+  border-radius: 2em;
+  border: none;
+  padding: .5em;
+  font-family: "Roboto", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 /*
-    REGISTER/LOGIN PAGE STYLES
+REGISTER/LOGIN PAGE STYLES
 */
+
+#register-title{
+  font-family: "Roboto", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .form-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 85%;
-  }
-  
-  .form-signin {
-    min-width: 330px;
-  }
+  display: flex;
+  height: 100vh;
+}
 
-.form-signin .form-floating:focus-within {
-    z-index: 2;
-  }
-  
-  .form-signin input[type="username"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-  
-  .form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  
-  .list-group{
-    --bs-list-group-item-padding-x: 1rem;
-    --bs-list-group-item-padding-y: 1.5rem;
-  }
+.background-image{
+  background-image: 
+  linear-gradient(to right, var(--background-color),rgba(198, 121, 149, 0) 70%),
+  linear-gradient(to bottom, var(--background-color),rgba(198, 121, 149, 0) 70%),
+  linear-gradient(to top, var(--background-color),rgba(198, 121, 149, 0) 70%),
+  url('/sprinkles-8831931_1920.png'),
+  url('/donut-7423545.png');
+  opacity: 0.2;
+}
 
+.background-image, .form-signin{
+  flex: 1;
+}
+#register-title{
+  text-align: center;
+}
+
+.form-signin{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: 
+    linear-gradient(to left, var(--background-color),rgba(198, 121, 149, 0) 70%),
+    linear-gradient(to right, var(--background-color),rgba(198, 121, 149, 0) 70%),
+    linear-gradient(to top, var(--background-color),rgba(198, 121, 149, 0) 70%),
+    linear-gradient(to bottom, var(--background-color), rgba(198, 121, 149, 0) 70%), 
+    url('/sprinkles-8831931_1920.png');
+}
+
+.signin-box{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  min-width: 400px;
+  width: 60%;
+  background-color: rgb(199, 113, 144);
+  border-radius: 2em;
+  box-shadow: 20px 20px 90px rgba(189, 60, 107, 0.842);
+}
+
+.signin-box h1{
+  align-self: center;
+}
+
+#alert{
+  background-color: hsl(340, 38%, 80%);
+  color: hsl(340, 38%, 50%);
+  padding: 1rem;
+  border-radius: 2em;
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  text-align: center;
+}
+
+.inputFields{
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+.inputFields label{
+  font-family: "Roboto", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+input::placeholder{
+  color: rgba(22, 5, 11, 0.719);
+}
+
+#username-error-message, #password-error-message{
+  color: red;
+}
+
+input{
+  font-family: "Roboto", serif;
+  font-weight: 400;
+  font-style: normal;
+  border: none;
+}
+  
+  .inputFields input{
+  border-radius: .2em;
+  background-color: var(--input-background-color);
+  transition: background-color 0.3s ease;
+  margin: 1em 0;
+  padding: .5em;
+}
+
+.inputFields input:focus{
+  background-color: var(--foreground-color);
+  outline: none;
+}
+
+#submit-buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+#submit-buttons button{
+  box-shadow: 2px 2px 5px rgb(108, 46, 68);
+}
+
+.google-btn{
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.google-icon{
+  position: absolute;
+  left: 10px;
+}
+
+#submit-buttons .google-btn img{
+  height: auto;
+  width: 30px;
+}
+.background-image img{
+  width: 100%;
+  height: 100%;
+}
   /*
   HOME PAGE STYLES
   */
-  #home{
-    margin: 1em;
+  .home-container{
+    display: flex;
+  }
+
+/*
+NAV FEED STYLES
+*/
+  .nav{
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .nav div:first-child, .main-feed-header, .news div:first-child{
+    background-color: var(--foreground-color);
+    min-height: 250px;
+  }
+  
+  .nav .title-info{
+    display: flex;
+    padding: .5rem;
+    width: 100%;
+  }
+
+  .nav .title-info .logout{
+   align-self: flex-end;
+   margin-left: auto;
+  }
+
+  #navbar{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 16px;
+  }
+
+  #navbar a{
+    font-size: 32px;
+    color: rgba(94, 43, 61, 0.767);
+    text-decoration: none;
+  }
+/*
+MAIN FEED STYLES
+*/
+  .main-feed{
+    flex: 2;
+  }
+  .main-feed::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Scrollbar track */
+.main-feed::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+/* Scrollbar thumb */
+.main-feed::-webkit-scrollbar-thumb {
+  background-color: var(--foreground-color);
+  border-radius: 1rem; 
+  height: 20px;
+}
+
+  .main-feed-header{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: .5rem;
+    border-left: 4px solid var(--background-color);
+    border-right: 4px solid var(--background-color);
+  }
+
+/*
+MAIN FEED post input and button
+*/
+.post-form-group{
+  display: flex;
+  flex-direction: column;
+}
+
+#create-post{
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+}
+
+#post-profile-picture{
+  align-self: flex-start;
+  display: flex;
+  align-items: baseline;
+  gap: .3rem;
+}
+
+#post-profile-picture #post-username{
+  font-size: 18px;
+  font-weight: 500;
+}
+
+#create-post #contentField{
+    flex: 3;
+    display: block;
+    width: 200px;
+    background-color: inherit;
+    color: rgba(94, 43, 61, 0.77);
+    caret-color: rgba(94, 43, 61, 0.77);
+    font-size: 24px;
+    outline:none;
+    overflow: hidden;
+    border-bottom: 3px solid var(--background-color);
+    resize: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  #create-post #contentField:empty::before{
+    content: "What is on your mind?";
+    pointer-events: none;
+  }
+
+  #warning-text{
+    visibility: hidden;
+    color: red;
+    font-size: 0.9rem;
+  }
+
+  #create-post textarea:focus{
+    outline: none;
+  }
+
+  #create-post button{
+    flex: 1;
+    align-self: flex-end;
+    height: 50px;
+    width: 100px;
+  }
+
+  .error-message{
+    text-align: left;
+    display: none;
+  }
+
+  .filter-feed{
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    height: 130px;
+   
+  }
+  
+  .radio, #profilePicture{
+    display: none;
+  }
+  
+  .filter-button{
+    border: 2px solid var(--background-color);
+    background-color: var(--foreground-color);
+    padding: .4rem;
+    cursor: pointer;
+  }
+
+  .radio:checked + .filter-button{
+    background-color: var(--button-selected-color);
+  }
+
+  .filter-feed .left-label{
+    width: 200px;
+    max-height: 50px;
+    text-align: center;
+    font-weight: 600;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+  
+  .filter-feed .right-label{
+    width: 200px;
+    max-height: 50px;
+    text-align: center;
+    font-weight: 600;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+
+  /*
+  NEWS FEED STYLES
+  */
+
+  .news{
+    flex: 1;
   }
   /*
   POST STYLES FOR ALL PAGES
   */
-  .post-header{
-      display: flex;
-      margin: 1em;
-    }
-    .post-header .button-options{
-      margin: auto;
-      display: block;
-    }
-
-    .button-options #create-post{
-      padding-top: 1em;
-    }
     
-  .posts{
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
+.posts{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
 }
 
 .post{
-    flex: 1;
-    width: 700px;
-    padding: 1em;
-    word-wrap: break-word;
-  }
-
-  .post .content{
+  box-sizing: border-box;
+  width: 100%;
+  padding: .5rem;
+  border-bottom: 1px solid var(--foreground-color);
+  margin-top: 2rem;
+}
+.post .content{
+    font-size: 24px;
     padding: .5em;
   }
 
@@ -115,10 +408,12 @@ main {
   }
 
   .post .like-btn{
+    background-color: var(--background-color);
     color: blue;
   }
-
+  
   .post .trash{
+    background-color: var(--background-color);
     color: red;
   }
 
@@ -127,18 +422,20 @@ PROFILE STYLES
 */
 
 .profile{
-  margin: 1em;
+  padding: 1em;
 }
 
 .profile-picture img{
-  width: 100px;
-  height: 150;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .profile-picture .avatar-buttons{
   display: flex;
-  width: 300px;
-  justify-content: space-between;
+  padding: .5rem 0 .5rem 0;
+  justify-content: flex-start;
 }
 
 .profile .btn-group{
