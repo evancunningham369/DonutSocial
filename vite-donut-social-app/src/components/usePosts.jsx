@@ -3,9 +3,10 @@ import * as post_req from '../../api/post.js';
 function usePosts(loggedInUserId, posts, setPosts){
 
     const createPost = async (event) => {
-        const { content } = event.currentTarget;
+        const postContent = event.target.content.value;
+        
         const post = {
-            content: content.value,
+            content: postContent,
             userId: loggedInUserId
         }
         
@@ -29,7 +30,6 @@ function usePosts(loggedInUserId, posts, setPosts){
                 break;
         }
         
-        
         const formatOptions = {
             year: 'numeric',
             month: 'long',
@@ -42,7 +42,7 @@ function usePosts(loggedInUserId, posts, setPosts){
             ...post,
             post_datetime: new Date(post.post_datetime).toLocaleString(undefined, formatOptions)
         }));
-
+        
         return updatedPosts
     }
 
