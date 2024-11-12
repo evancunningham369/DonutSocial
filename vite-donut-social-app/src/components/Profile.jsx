@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import * as account_req from '../../api/account.js';
 import * as post_req from '../../api/post.js';
 import * as user_action from '../../api/user.js';
@@ -77,9 +76,9 @@ function Profile(){
                         <label className="btn btn-primary" htmlFor='profilePicture'>
                             Upload New Picture
                         </label>
-                        <Button variant='danger' className="btn btn-primary" onClick={removeProfilePicture} type="button">Remove Avatar</Button>
+                        <button onClick={removeProfilePicture} type="button">Remove Avatar</button>
                     </>: 
-                    <button className="btn btn-primary" onClick={handleFollow}>{followText}</button>
+                    <button onClick={handleFollow}>{followText}</button>
                     }
                 </div>
             </div>
