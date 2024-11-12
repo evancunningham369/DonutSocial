@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import Post from './Post.jsx'
 import usePosts from "./usePosts.jsx";
+import { useParams } from "react-router-dom/dist/umd/react-router-dom.development.js";
 
 function Posts({postType}) {
 
     const [posts, setPosts] = useState([]);
-    let loggedInUserId = sessionStorage.getItem('userId');
-    const { getPost, deletePost } = usePosts(loggedInUserId, posts, setPosts);
+    const {userId} = useParams();
+    
+    const { getPost, deletePost } = usePosts(userId, posts, setPosts);
 
     const fetchPosts = async() => {
         try {
