@@ -47,8 +47,10 @@ export const get_post = async (req, res) => {
 export const get_all_posts = async(req, res) => {
     try {
         const allPosts = await pool.query(`
-            SELECT *
+            SELECT account.username, post.*
             FROM post
+            JOIN account
+            ON account.user_id = post.user_id
             ORDER BY post.post_datetime DESC`);
         
         res.json(allPosts.rows);
@@ -62,10 +64,10 @@ export const get_user_following_posts = async(req, res) => {
     try {
         const { userId } = req.params;
         const result = await pool.query(`
-            SELECT post.*
+            SELECT account.username, post.*
             FROM post
-            JOIN followers
-            ON post.user_id = followers.followed_id
+            JOIN followers ON post.user_id = followers.followed_id
+            JOIN account ON post.user_id = account.user_id
             WHERE followers.follower_id = $1
             ORDER BY post.post_datetime DESC`,
         [userId]);
@@ -81,8 +83,9 @@ export const get_user_liked_posts = async(req, res) => {
     try {
         const { userId } = req.params;
         const likedPosts = await pool.query(`
-            SELECT * 
+            SELECT account.username, post.* 
             FROM post 
+            JOIN account ON post.user_id = account.user_id
             WHERE $1=ANY(liked_users)
             ORDER BY post.post_datetime DESC`
             , [userId]);
@@ -109,9 +112,10 @@ export const get_user_posts = async(req, res) => {
     try {
         const { userId } = req.params;
         const allPosts = await pool.query(`
-            SELECT * 
+            SELECT account.username, post.* 
             FROM post 
-            WHERE user_id=$1
+            JOIN account ON post.user_id = account.user_id
+            WHERE post.user_id=$1
             ORDER BY post.post_datetime DESC`,
              [userId]);
 
