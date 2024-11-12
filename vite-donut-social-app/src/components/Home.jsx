@@ -101,7 +101,7 @@ function Home() {
                     <div className='post-form-group'>
                             <div id='post-profile-picture' className="profile-picture">
                                 <Link to={`/profile/${loggedInUserId}/${loggedInUsername}`}>
-                                    <img className='profile-picture' src={profilePicture} alt="post profile picture" />
+                                    <img className='profile-picture custom-border-dark' src={profilePicture} alt="post profile picture" />
                                 </Link>
                                 <span id='post-username'>{loggedInUsername}</span>
                             </div>
