@@ -15,11 +15,9 @@ function Logout() {
     }
 
     return(
-        <header>
-            <div className="logout">
-                <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
-            </div>
-        </header>
+        <div className="logout">
+            <button className="button" onClick={handleLogout}>Logout</button>
+        </div>
     )
 }
 
