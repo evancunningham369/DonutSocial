@@ -9,9 +9,8 @@ import { like_icon, unlike_icon, trash_icon } from './icons.jsx'
 function Post({post, deletePost }) {
     
     const loggedInUserId = sessionStorage.getItem('userId');
-    const loggedInUsername = sessionStorage.getItem('username');
     
-    const {username = loggedInUsername, user_id: userIdPoster, post_id: postId, content, post_datetime } = post;
+    const {username, user_id: userIdPoster, post_id: postId, content, post_datetime } = post;
     
     const { profilePicture } = useProfilePicture(userIdPoster);
 
@@ -56,12 +55,11 @@ function Post({post, deletePost }) {
 
     return (
         <div className='post'>
-            <hr className='solid' />
             <div className="post-heading">
                 <div className="user-post-info">
                     <div className="profile-picture">
                         <Link to={`/profile/${userIdPoster}/${username}`}>
-                            <img style={{ width: '50px', height: '50px' }}src={profilePicture} alt="post profile picture" />
+                            <img src={profilePicture} alt="post profile picture" />
                         </Link>
                     </div>
                     <h4 style={{ display: 'inline' }}>{username}</h4>

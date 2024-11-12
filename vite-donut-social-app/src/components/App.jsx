@@ -6,10 +6,8 @@ import Profile from "./Profile";
 import {BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
-  console.log("App");
     return (
       <>
-        <Header />
       <BrowserRouter>
           <Routes>
             <Route path="/" element={<Register/>}/>
