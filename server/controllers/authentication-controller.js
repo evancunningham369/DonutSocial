@@ -60,7 +60,7 @@ export const login_account = async(username, password, done) => {
     try {
         const result = await pool.query('SELECT * FROM account WHERE username= $1', [username]);
         if(result.rowCount == 0){
-            return done(null, false, {message: "Incorrect username!"})
+            return done(null, false, {message: "Username does not exist!"})
         }
         const user = result.rows[0];
         
