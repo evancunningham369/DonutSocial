@@ -87,15 +87,13 @@ function Profile(){
                     <h4>Followers: {followers}</h4>
                     <h4>Following: {following}</h4>
             </div>
-            <div className='btn-group' role="group">
-                <input id='my-posts' className='btn-check' onChange={(e) => setSelection('user')} type="radio" name='options' autoComplete="off" defaultChecked />
-                <label className='btn btn-outline-primary'htmlFor="my-posts">My Posts</label>
-                <input id='liked-posts' className='btn-check' onChange={(e) => setSelection('liked')} type="radio" name='options' autoComplete="off" />
-                <label className='btn btn-outline-primary'htmlFor="liked-posts">Liked Posts</label>
+            <div className='filter-feed' role="group">
+                <input id='my-posts' className='radio' onChange={(e) => setSelection('user')} type="radio" name='options' autoComplete="off" defaultChecked />
+                <label className='filter-button left-label'htmlFor="my-posts">My Posts</label>
+                <input id='liked-posts' className='radio' onChange={(e) => setSelection('liked')} type="radio" name='options' autoComplete="off" />
+                <label className='filter-button right-label'htmlFor="liked-posts">Liked Posts</label>
             </div>
-            <div className="user-posts">
             < Posts postType = {selection}/>
-            </div>
         </div>
     )
 }
