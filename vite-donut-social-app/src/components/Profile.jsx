@@ -38,7 +38,7 @@ function Profile(){
 
     useEffect(() => {
         getProfileInfo();
-    }, [profilePicture, followText]);
+    });
     
     const handleFileUpload = async(event) => {
         const file = event.target.files[0];
@@ -48,6 +48,7 @@ function Profile(){
         
         const response = await account_req.upload_profile_picture(formData);
         let url = response.profile_picture;
+        
         setProfilePicture('http://localhost:3001/'+ url.replace(/\\/g, '/'));
     }
 
@@ -67,28 +68,30 @@ function Profile(){
 
     return (
         <div className="profile">
-            <h1>{username}'s Profile</h1>
-            <div className="profile-picture">
-                <img src={profilePicture} alt="Profile Picture" />
-                <div className="avatar-buttons">
-                    {isOwnProfile ? <>
-                        <input style={{opacity: 0}} type="file" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleFileUpload} />
-                        <label className="btn btn-primary" htmlFor='profilePicture'>
-                            Upload New Picture
-                        </label>
-                        <button onClick={removeProfilePicture} type="button">Remove Avatar</button>
-                    </>: 
-                    <button onClick={handleFollow}>{followText}</button>
-                    }
+            <div className="profile-header">
+                <h1>{username}</h1>
+                <div className="profile-picture">
+                    <img className="custom-border-dark" src={profilePicture} alt="Profile Picture" />
+                    <div className="avatar-buttons">
+                        {isOwnProfile ? <>
+                            <input type="file" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleFileUpload} />
+                            <label id="upload" className="button" htmlFor='profilePicture'>
+                                Upload Picture
+                            </label>
+                            <button id="remove" className="button" onClick={removeProfilePicture} type="button">Remove Picture</button>
+                        </>: 
+                        <button className="button" onClick={handleFollow}>{followText}</button>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className="account-info">
-                    <h4>Followers: {followers}</h4>
-                    <h4>Following: {following}</h4>
+                <div className="account-info">
+                        <h4>Followers: {followers}</h4>
+                        <h4>Following: {following}</h4>
+                </div>
             </div>
             <div className='filter-feed' role="group">
                 <input id='my-posts' className='radio' onChange={(e) => setSelection('user')} type="radio" name='options' autoComplete="off" defaultChecked />
-                <label className='filter-button left-label'htmlFor="my-posts">My Posts</label>
+                <label className='filter-button left-label'htmlFor="my-posts">{username}'s Posts</label>
                 <input id='liked-posts' className='radio' onChange={(e) => setSelection('liked')} type="radio" name='options' autoComplete="off" />
                 <label className='filter-button right-label'htmlFor="liked-posts">Liked Posts</label>
             </div>
