@@ -51,6 +51,7 @@ export const delete_profile_picture = async(req, res) => {
     }
 }
 
+
 export const is_user_following = async(req, res) => {
     try {
         const { followerId, followedId } = req.params;
@@ -67,6 +68,7 @@ export const is_user_following = async(req, res) => {
     }
 }
 
+// Retrieve follower and following count of user
 export const get_profile_info = async(req, res) => {
     try {
         const { userId } = req.params;

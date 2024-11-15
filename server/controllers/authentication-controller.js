@@ -74,6 +74,7 @@ export const login_account = async(username, password, done) => {
     }
 }
 
+// Authenticate user locally
 export const handleAuthentication = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err){
@@ -94,6 +95,7 @@ export const handleAuthentication = (req, res, next) => {
     })(req, res, next);
 }
 
+// Logout user
 export const logout = async(req, res) => {
         req.logout(err => {
             if(err) return res.status(500).json({ message : 'Logout failed' });
