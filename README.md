@@ -51,10 +51,6 @@ A full-stack social networking platform where users can connect, share updates, 
    - Email and password.
    - Google Sign-In (OAuth 2.0).
 
-2. Upon successful login, users are redirected to the feed where they can:
-   - Create posts.
-   - View general or following posts.
-
 ## **Creating a Post**
 - Navigate to the "Create Post" form.
 - Enter your message and click submit.
