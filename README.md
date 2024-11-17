@@ -8,7 +8,6 @@ A full-stack social networking platform where users can connect, share updates, 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
-- [Environment Variables](#environment-variables)
 - [Usage](#usage)
 - [Authentication Details](#authentication-details)
 - [Future Enhancements](#future-enhancements)
