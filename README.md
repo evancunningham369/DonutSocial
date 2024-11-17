@@ -12,6 +12,7 @@ A full-stack social networking platform where users can connect, share updates, 
 - [Usage](#usage)
 - [Authentication Details](#authentication-details)
 - [Future Enhancements](#future-enhancements)
+- [Contact](#contact)
 
 ---
 
