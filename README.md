@@ -64,6 +64,7 @@ This project uses Google OAuth 2.0 for seamless login:
 - Real-Time Updates:
   - Use WebSockets or Firebase for real-time post updates.
 - User messaging
+- Comments
 - Notifications:
   - Notify users when someone likes or comments on their posts.
 
