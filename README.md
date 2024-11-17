@@ -44,13 +44,6 @@ A full-stack social networking platform where users can connect, share updates, 
 - Express
 - PostgreSQL
 
-# **Usage**
-
-## **Authentication**
-1. Users can register and log in using:
-   - Email and password.
-   - Google Sign-In (OAuth 2.0).
-
 ## **Creating a Post**
 - Navigate to the "Create Post" form.
 - Enter your message and click submit.
