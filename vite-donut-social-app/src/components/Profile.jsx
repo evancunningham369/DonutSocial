@@ -70,7 +70,7 @@ function Profile(){
         <div className="profile">
             <div className="profile-header">
                 <h1>{username}</h1>
-                <div className="profile-picture">
+                <div id="user-profile-picture" className="profile-picture">
                     <img className="custom-border-dark" src={profilePicture} alt="Profile Picture" />
                     <div className="avatar-buttons">
                         {isOwnProfile ? <>

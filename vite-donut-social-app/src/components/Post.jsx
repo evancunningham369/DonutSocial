@@ -60,7 +60,7 @@ function Post({post, deletePost }) {
                 <div className="user-post-info">
                     <div className="profile-picture">
                         <Link to={`/profile/${userIdPoster}/${username}`}>
-                            <img className='custom-border-light' src={profilePicture} alt="post profile picture" />
+                            <img className='profile-picture custom-border-light' src={profilePicture} alt="post profile picture" />
                         </Link>
                     </div>
                     <h4 style={{ display: 'inline' }}>{username}</h4>
