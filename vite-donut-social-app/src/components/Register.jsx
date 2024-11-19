@@ -130,9 +130,6 @@ function Register() {
         </div>
         </div>
       </form>
-      <div className='background-image'>
-        <img src="/sprinkles-8831931_1920.png" alt="sprinkles background" style={{display:'none'}}/>
-      </div>
     </div>
   )
 }
