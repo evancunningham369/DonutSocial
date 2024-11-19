@@ -3,6 +3,7 @@
   --foreground-color: rgba(187, 83, 119, 0.767);
   --input-background-color: rgba(220, 95, 139, 0.767);
   --button-selected-color: rgba(159, 70, 101, 0.767);
+  --text-color: rgba(94, 43, 61, 0.767);
 }
 
 html,
@@ -11,7 +12,7 @@ body,
 main {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh;
   background-color: var(--background-color);
   font-family: "Roboto", serif;
   font-weight: 400;
@@ -28,19 +29,12 @@ main {
   font-style: normal;
 }
 
-img{
-  border-radius: 50%;
-  object-fit: cover;
-  width: 50px;
-  height: 50px;
-}
-
 .custom-border-light{
-  border: 2px solid var(--foreground-color)
+  border: 2px solid var(--foreground-color);
 }
 
 .custom-border-dark{
-  border: 2px solid var(--background-color)
+  border: 2px solid var(--background-color);
 }
 /*
 REGISTER/LOGIN PAGE STYLES
@@ -57,19 +51,10 @@ REGISTER/LOGIN PAGE STYLES
   height: 100vh;
 }
 
-.background-image{
-  background-image: 
-  linear-gradient(to right, var(--background-color),rgba(198, 121, 149, 0) 70%),
-  linear-gradient(to bottom, var(--background-color),rgba(198, 121, 149, 0) 70%),
-  linear-gradient(to top, var(--background-color),rgba(198, 121, 149, 0) 70%),
-  url('/sprinkles-8831931_1920.png'),
-  url('/donut-7423545.png');
-  opacity: 0.2;
-}
-
-.background-image, .form-signin{
+.form-signin{
   flex: 1;
 }
+
 #register-title{
   text-align: center;
 }
@@ -92,8 +77,8 @@ REGISTER/LOGIN PAGE STYLES
   display: flex;
   flex-direction: column;
   padding: 2rem;
+  max-width: 500px;
   min-width: 400px;
-  width: 60%;
   background-color: rgb(199, 113, 144);
   border-radius: 2em;
   box-shadow: 20px 20px 90px rgba(189, 60, 107, 0.842);
@@ -101,6 +86,7 @@ REGISTER/LOGIN PAGE STYLES
 
 .signin-box h1{
   align-self: center;
+  font-size: 2rem;
 }
 
 #alert{
@@ -179,10 +165,6 @@ input{
   height: auto;
   width: 30px;
 }
-.background-image img{
-  width: 100%;
-  height: 100%;
-}
   /*
   HOME PAGE STYLES
   */
@@ -190,11 +172,23 @@ input{
     display: flex;
   }
 
+  .profile-picture{
+    border-radius: 50%;
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon{
+    width: 40px;
+    height: 40px;
+  }
+
 /*
 NAV FEED STYLES
 */
   .nav{
-    flex: 1;
+    display: flex;
     flex-direction: column;
   }
 
@@ -214,7 +208,9 @@ NAV FEED STYLES
    margin-left: auto;
   }
 
-  #navbar{
+  #side-navbar{
+    margin-top: 20px;
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     gap: 50px;
@@ -222,10 +218,14 @@ NAV FEED STYLES
     padding-right: 32px;
   }
 
-  #navbar a{
+  .navbar a{
     font-size: 32px;
     color: rgba(94, 43, 61, 0.767);
     text-decoration: none;
+  }
+
+  #bottom-navbar{
+    display: none;
   }
 /*
 MAIN FEED STYLES
@@ -498,7 +498,7 @@ PROFILE STYLES
   color: black;
 }
 
-.profile-picture .avatar-buttons{
+#user-profile-picture .avatar-buttons{
   display: flex;
   padding: .5rem 0 .5rem 0;
   justify-content: flex-start;
@@ -506,4 +506,42 @@ PROFILE STYLES
 
 .profile .btn-group{
   padding: .5em 0;
+}
+
+/**
+MEDIA QUERIES
+**/
+
+@media screen and (max-width: 1000px) {
+  .news{
+    flex: 0;
+  }
+
+  .news-header{
+    display:none;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .nav-text{
+    display: none;
+  }
+}
+
+@media screen and (max-width: 800px) {
+
+  .home-container .nav{
+    display: none;
+  }
+
+  #bottom-navbar{
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 1rem;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
 }
