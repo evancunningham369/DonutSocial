@@ -70,8 +70,8 @@ function Profile(){
         <div className="profile">
             <div className="profile-header">
                 <h1>{username}</h1>
-                <div id="user-profile-picture" className="profile-picture">
-                    <img className="custom-border-dark" src={profilePicture} alt="Profile Picture" />
+                <div id="user-profile-picture">
+                    <img className="custom-border-dark profile-picture" src={profilePicture} alt="Profile Picture" />
                     <div className="avatar-buttons">
                         {isOwnProfile ? <>
                             <input type="file" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleFileUpload} />
