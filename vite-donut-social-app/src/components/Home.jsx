@@ -30,29 +30,26 @@ function Home() {
     }
     
     /**
-     * Move cursor to end of input
      * Add styling for warning message when character limit is reached
     **/
     const handleInput = (event) => {
         
         const warningText = document.getElementById('warning-text');
+        const postButton = document.getElementById('post-button');
+        
         if(event.target.innerText.length >= maxLength){
-            event.target.innerText = event.target.innerText.substring(0, maxLength);
+            postButton.disabled = true;
+            postButton.style.opacity = .7;
+            
             warningText.style.visibility = 'visible';
             
-           event.target.style.border = "1px solid red";
-           const range = document.createRange();
-           const selection = window.getSelection();
-           if(event.target.childNodes[0] && event.target.childNodes[0] >= event.target.innerText.length){
-            range.setStart(event.target.childNodes[0], event.target.innerText.length);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-           }
-        }
-        else{
-            event.target.style = "";
-            warningText.style.visibility = 'hidden';
+            event.target.style.border = "1px solid red";
+            }
+            else{
+                postButton.disabled = false;
+                postButton.style.opacity = 1;
+                event.target.style = "";
+                warningText.style.visibility = 'hidden';
         }
         
         //Remove line break element that browsers add using contenteditable attribute
@@ -116,7 +113,7 @@ function Home() {
                         <form id="create-post" onSubmit={createPost} noValidate>
                             <span name='content' id='contentField' onInput={handleInput} contentEditable='true'></span>
                             <span id="warning-text">Max 160 characters</span>
-                            <button className='button' type='submit'>Post</button>
+                            <button id='post-button' className='button' type='submit'>Post</button>
                         </form>
                     </div>
 
