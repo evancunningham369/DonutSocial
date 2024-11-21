@@ -51,7 +51,7 @@ const createDatabaseAndTables = async () => {
             CREATE TABLE IF NOT EXISTS post(
                 post_id SERIAL PRIMARY KEY,
                 content VARCHAR(255) NOT NULL,
-                post_datetime TIMESTAMP,
+                post_datetime TIMESTAMPTZ NOT NULL,
                 user_id INT NOT NULL REFERENCES account(user_id) ON DELETE CASCADE,
                 liked_users integer[],
                 liked BOOLEAN DEFAULT FALSE
