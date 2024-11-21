@@ -69,24 +69,28 @@ function Profile(){
     return (
         <div className="profile">
             <div className="profile-header">
-                <h1>{username}</h1>
+                <h1 id="profile-user-title">{username}</h1>
                 <div id="user-profile-picture">
                     <img className="custom-border-dark profile-picture" src={profilePicture} alt="Profile Picture" />
                     <div className="avatar-buttons">
                         {isOwnProfile ? <>
                             <input type="file" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleFileUpload} />
-                            <label id="upload" className="button" htmlFor='profilePicture'>
-                                Upload Picture
+                            <label id="upload" className="button profile-button" htmlFor='profilePicture'>
+                                <img src="/icons/upload.png" alt="upload-icon" />
+                                <span className="profile-button-text">Upload</span>
                             </label>
-                            <button id="remove" className="button" onClick={removeProfilePicture} type="button">Remove Picture</button>
+                            <button id="remove" className="button profile-button" onClick={removeProfilePicture} type="button">
+                                <img src="/icons/cross-circle.png" alt="remove-icon" />
+                                <span className="profile-button-text">Remove</span>
+                            </button>
                         </>: 
                         <button className="button" onClick={handleFollow}>{followText}</button>
                         }
                     </div>
                 </div>
                 <div className="account-info">
-                        <h4>Followers: {followers}</h4>
-                        <h4>Following: {following}</h4>
+                        <h4 id="follower">Followers: {followers}</h4>
+                        <h4 id="following">Following: {following}</h4>
                 </div>
             </div>
             <div className='filter-feed' role="group">
