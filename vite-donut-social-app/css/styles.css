@@ -6,12 +6,15 @@
   --text-color: rgba(94, 43, 61, 0.767);
 }
 
+html, body, #root{
+  height: 100%;
+}
+
 html,
 body,
 #root,
 main {
   overflow-x: hidden;
-  width: 100%;
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
@@ -19,7 +22,6 @@ main {
   font-weight: 400;
   font-style: normal;
 }
-
 
 .button{
   background-color: var(--input-background-color);
@@ -256,8 +258,9 @@ MAIN FEED STYLES
   .main-feed-header{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     box-sizing: border-box;
-    padding: .5rem;    
+    padding: .5rem; 
   }
 
 /*
@@ -265,15 +268,9 @@ MAIN FEED post input and button
 */
 .post-form-group{
   display: flex;
+  width: 100%;
   flex-direction: column;
   box-sizing: border-box;
-}
-
-#create-post{
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex: 1;
 }
 
 #post-profile-picture{
@@ -289,7 +286,7 @@ MAIN FEED post input and button
 }
 
 #create-post #contentField{
-    width: 300px;
+    flex: 1;
     display: block;
     background-color: inherit;
     color: rgba(94, 43, 61, 0.77);
@@ -297,16 +294,17 @@ MAIN FEED post input and button
     font-size: 24px;
     outline:none;
     overflow: hidden;
+    box-sizing: border-box;
     border-bottom: 3px solid var(--background-color);
     resize: none;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
 
-  #create-post button{
-    min-width: 150px;
-    max-width: 200px;
-    height: 50px;
+  #post-button{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
   }
 
   #create-post #contentField:empty::before{
@@ -335,7 +333,7 @@ MAIN FEED post input and button
     align-self: center;
     justify-content: center;
     height: 130px;
-   
+    margin: .5rem;
   }
   
   .radio, #profilePicture{
@@ -406,10 +404,6 @@ MAIN FEED post input and button
   .post-heading{
     display: flex;
     justify-content: space-between;
-  }
-
-  .post-heading .post-datetime{
-    
   }
 
   .user-post-info{
@@ -496,7 +490,15 @@ PROFILE STYLES
   flex-direction: column;
   background-color: var(--foreground-color);
   padding: 1rem;
-  margin-bottom: .5rem;
+}
+
+.account-info{
+  display: flex;
+}
+
+#follower, #following{
+  margin: 0;
+  padding: .5rem;
 }
 
 #upload{
@@ -504,8 +506,9 @@ PROFILE STYLES
   color: black;
 }
 
-#user-profile-picture .avatar-buttons{
+#user-profile-picture{
   display: flex;
+  flex-direction: column;
   padding: .5rem 0 .5rem 0;
 }
 
@@ -553,5 +556,13 @@ MEDIA QUERIES
     bottom: 0;
     left: 0;
     width: 100%;
+  }
+
+  .profile-button-text{
+    display: none;
+  }
+
+  .account-info h4{
+    display: inline-block;
   }
 }
