@@ -65,7 +65,7 @@ function Post({post, deletePost }) {
                     </div>
                     <h4 style={{ display: 'inline' }}>{username}</h4>
                 </div>
-                <p className='post-datetime'>Posted on: {post_datetime}</p>
+                <p className='post-datetime'>{post_datetime}</p>
             </div>
             <div className="content">
                 <p>{content}</p>
@@ -90,7 +90,7 @@ function Post({post, deletePost }) {
                                     <img style={{ display: 'inline', width: '25px', height: '25px' }} src={profilePicture} alt="post profile picture" />
                                     <h4 style={{ display: 'inline' }}>{username}</h4>
                                 </div>
-                                <p className='post-datetime'>Posted on: {post_datetime}</p>
+                                <p className='post-datetime'>{post_datetime}</p>
                             </div>
                             <div className="content">
                                 <p>{content}</p>
