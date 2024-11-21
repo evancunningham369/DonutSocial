@@ -33,9 +33,11 @@ function usePosts(userId, posts, setPosts){
         }
 
         const getTimeAgo = (postDatetime) => {
-            const now = new Date();
-            const postDate = new Date(postDatetime);
+
+            const now = Date.now();
+            const postDate = new Date(postDatetime).getTime();
             const secondsAgo = Math.floor((now - postDate) / 1000);
+            
             
             const thresholds = [
                 { divisor: 31536000, unit: "year" },     // 1 year = 31536000 seconds
@@ -52,8 +54,6 @@ function usePosts(userId, posts, setPosts){
                     return `${value} ${unit}${value > 1 ? 's' : ''} ago`;
                 }
             }
-
-
         }
         
         const updatedPosts = (allPosts || []).map(post => ({
