@@ -54,7 +54,6 @@ function Profile(){
 
     const removeProfilePicture = async() => {
         const response = await account_req.delete_profile_picture(loggedInUserId);
-        console.log(response);
         setProfilePicture(donut);
     }
 
@@ -89,8 +88,8 @@ function Profile(){
                     </div>
                 </div>
                 <div className="account-info">
-                        <h4 id="follower">Followers: {followers}</h4>
-                        <h4 id="following">Following: {following}</h4>
+                        <h4 id="follower">{followers} Followers</h4>
+                        <h4 id="following">{following} Following</h4>
                 </div>
             </div>
             <div className='filter-feed' role="group">
@@ -99,7 +98,9 @@ function Profile(){
                 <input id='liked-posts' className='radio' onChange={(e) => setSelection('liked')} type="radio" name='options' autoComplete="off" />
                 <label className='filter-button right-label'htmlFor="liked-posts">Liked Posts</label>
             </div>
-            < Posts postType = {selection}/>
+            <div id="profile-posts">
+                < Posts postType = {selection}/>
+            </div>
         </div>
     )
 }
