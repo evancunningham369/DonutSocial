@@ -95,29 +95,30 @@ function Home() {
 
             {/** BEGIN MAIN(CENTER) SECTION */}
             <div className='main-feed'>
-                <div className="main-feed-header">
+                <form className="main-feed-header" onSubmit={createPost} noValidate>
+                    <div className='post-form-group'>
+                        <div id='post-profile-picture' className="profile-picture">
+                            <Link to={`/profile/${loggedInUserId}/${loggedInUsername}`}>
+                                <img className='profile-picture custom-border-dark' src={profilePicture} alt="post profile picture" />
+                            </Link>
+                            <span id='post-username'>{loggedInUsername}</span>
+                        </div>
+                        <div id="create-post">
+                            <span name='content' id='contentField' onInput={handleInput} contentEditable='true'></span>
+                        </div>
+                    </div>
+
+                    <div id="post-button">
+                        <span id="warning-text">Max 160 characters</span>
+                        <button className='button' type='submit'>Post</button>
+                    </div>
+                </form>
                     <div className='filter-feed'>
                         <input id='general' className='radio' onChange={(e) => setSelection(e.target.id)} type="radio" name='options' autoComplete='off' defaultChecked />
                         <label id='general-label' className='filter-button left-label' htmlFor='general'>General Feed</label>
                         <input id='following' className='radio' onChange={(e) => setSelection(e.target.id)} type="radio" name='options' autoComplete='off' />
                         <label id='following-label' className='filter-button right-label' htmlFor='following'>Following</label>
                     </div>
-
-                    <div className='post-form-group'>
-                            <div id='post-profile-picture' className="profile-picture">
-                                <Link to={`/profile/${loggedInUserId}/${loggedInUsername}`}>
-                                    <img className='profile-picture custom-border-dark' src={profilePicture} alt="post profile picture" />
-                                </Link>
-                                <span id='post-username'>{loggedInUsername}</span>
-                            </div>
-                        <form id="create-post" onSubmit={createPost} noValidate>
-                            <span name='content' id='contentField' onInput={handleInput} contentEditable='true'></span>
-                            <span id="warning-text">Max 160 characters</span>
-                            <button id='post-button' className='button' type='submit'>Post</button>
-                        </form>
-                    </div>
-
-                </div>
                 < Posts postType = {selection}/>
             </div>
                 {/** END MAIN(CENTER) SECTION */}
