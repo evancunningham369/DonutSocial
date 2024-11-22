@@ -53,7 +53,7 @@ function Profile(){
     }
 
     const removeProfilePicture = async() => {
-        const response = await account_req.delete_profile_picture(loggedInUserId);
+        await account_req.delete_profile_picture(loggedInUserId);
         setProfilePicture(donut);
     }
 
@@ -68,7 +68,7 @@ function Profile(){
     return (
         <div className="profile">
             <div className="profile-header">
-                <h1 id="profile-user-title">{username}</h1>
+                <h1 id="profile-user-title">{username}'s Profile</h1>
                 <div id="user-profile-picture">
                     <img className="custom-border-dark profile-picture" src={profilePicture} alt="Profile Picture" />
                     <div className="avatar-buttons">
