@@ -60,7 +60,7 @@ This project uses Google OAuth 2.0 for seamless login:
    - The ID token is verified using the Google OAuth 2.0 client library.
    - Upon successful verification, user data is stored in the database or used to create a session.
 
-**Future Enhancements**:
+## **Future Enhancements**:
 - Real-Time Updates:
   - Use WebSockets or Firebase for real-time post updates.
 - User messaging
