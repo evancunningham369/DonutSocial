@@ -494,6 +494,10 @@ PROFILE STYLES
   padding: 1rem;
 }
 
+#profile-user-title{
+  text-align: center;
+}
+
 
 #follower, #following{
   margin: 0;
